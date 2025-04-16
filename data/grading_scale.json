@@ -1,0 +1,10 @@
+[
+    { "min": 80, "max": 100, "grade": "A", "point": 5.0 },
+    { "min": 75, "max": 79,  "grade": "B+", "point": 4.5 },
+    { "min": 70, "max": 74,  "grade": "B", "point": 4.0 },
+    { "min": 65, "max": 69,  "grade": "C+", "point": 3.5 },
+    { "min": 60, "max": 64,  "grade": "C", "point": 3.0 },
+    { "min": 55, "max": 59,  "grade": "D+", "point": 2.5 },
+    { "min": 50, "max": 54,  "grade": "D", "point": 2.0 },
+    { "min": 0,  "max": 49,  "grade": "F", "point": 0.0 }
+]

@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+{% block title %}Add Student{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="mb-4 text-center">Add New Student</h2>
+
+    <form method="POST" enctype="multipart/form-data">
+        <!-- Student Basic Info -->
+        <div class="row mb-3">
+            <div class="col-md-4">
+                <label class="form-label">Name:</label>
+                <input class="form-control" type="text" name="name" required>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label">UNMEB Exam Number:</label>
+                <input class="form-control" type="text" name="unmeb_no" required>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label">NSIN Number:</label>
+                <input class="form-control" type="text" name="nsin" required>
+            </div>
+        </div>
+
+        <!-- Program and Personal Info -->
+        <div class="row mb-3">
+            <div class="col-md-4">
+                <label class="form-label">Nationality:</label>
+                <input class="form-control" type="text" name="nationality" required>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label">Program:</label>
+                <select class="form-select" name="program" required>
+                    <option value="">-- Select Program --</option>
+                    <option value="CN">Certificate in Nursing</option>
+                    <option value="CM">Certificate in Midwifery</option>
+                </select>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label">Date of Birth:</label>
+                <input class="form-control" type="date" name="dob" required>
+            </div>
+        </div>
+
+        <!-- Enrollment Info -->
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <label class="form-label">Year of Entry:</label>
+                <input class="form-control" type="date" name="year_of_entry" required>
+            </div>
+            <div class="col-md-6">
+                <label class="form-label">Year of Completion:</label>
+                <input class="form-control" type="date" name="year_of_completion" required>
+            </div>
+        </div>
+
+        <!-- Photo Upload -->
+        <div class="mb-4">
+            <label class="form-label">Upload Passport Photo:</label>
+            <input class="form-control" type="file" name="photo" accept="image/*">
+        </div>
+
+        <!-- Submit -->
+        <div class="text-center">
+            <button class="btn btn-success px-5" type="submit">Register Student</button>
+            <a class="btn btn-secondary ms-2" href="{{ url_for('view_students') }}">Cancel</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

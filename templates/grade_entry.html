@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+{% block title %}Grade Entry{% endblock %}
+{% block content %}
+
+<h2 class="mb-4">Grade Entry for {{ student.get_name() }}</h2>
+
+<form method="POST">
+    <input type="hidden" name="student_id" value="{{ student.get_id() }}">
+
+    <!-- Semester Selection -->
+    <div class="mb-3">
+        <label for="semesterSelect" class="form-label">Select Semester</label>
+        <select class="form-select" name="semester" id="semesterSelect" required onchange="this.form.submit()">
+            <option value="">-- Select Semester --</option>
+            {% for sem in available_semesters %}
+                <option value="{{ sem }}" {% if sem == selected_semester %}selected{% endif %}>{{ sem }}</option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <!-- Grade Entry Table -->
+    {% if courses %}
+    <table class="table table-bordered">
+        <thead class="table-light">
+            <tr>
+                <th>Code</th>
+                <th>Title</th>
+                <th>Marks</th>
+                <th>Grade</th>
+                <th>Grade Point</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for course in courses %}
+            {% set i = loop.index0 %}
+            <tr>
+                <td>
+                    <input type="text" name="code_{{ i }}" class="form-control" value="{{ course.code }}" readonly>
+                </td>
+                <td>
+                    <input type="text" name="title_{{ i }}" class="form-control" value="{{ course.title }}" readonly>
+                </td>
+                <td>
+                    <input type="number" name="marks_{{ i }}" id="marks_{{ i }}" class="form-control"
+                        value="{{ existing[i].marks if existing[i] is defined else '' }}"
+                        oninput="updateGrade({{ i }})">
+                </td>
+                <td>
+                    <input type="text" name="grade_{{ i }}" id="grade_{{ i }}" class="form-control"
+                        value="{{ existing[i].grade if existing[i] is defined else '' }}" readonly>
+                </td>
+                <td>
+                    <input type="number" step="0.1" name="point_{{ i }}" id="point_{{ i }}" class="form-control"
+                        value="{{ existing[i].grade_point if existing[i] is defined else '' }}" readonly>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <button type="submit" name="submit_grades" class="btn btn-success">Submit Grades</button>
+    {% endif %}
+</form>
+
+<!-- Load grading scale and apply logic in JS -->
+<script>
+const gradingScale = {{ grading_scale | tojson }};
+
+function updateGrade(index) {
+    const marksInput = document.getElementById(`marks_${index}`);
+    const gradeField = document.getElementById(`grade_${index}`);
+    const pointField = document.getElementById(`point_${index}`);
+
+    const marks = parseFloat(marksInput.value);
+    let grade = "";
+    let point = "";
+
+    if (!isNaN(marks)) {
+        for (const rule of gradingScale) {
+            if (marks >= rule.min && marks <= rule.max) {
+                grade = rule.grade;
+                point = rule.point;
+                break;
+            }
+        }
+    }
+
+    gradeField.value = grade;
+    pointField.value = point;
+}
+</script>
+
+{% endblock %}

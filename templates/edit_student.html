@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% block title %}Edit Student{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="mb-4 text-center"> Edit Student</h2>
+
+    <form method="POST" enctype="multipart/form-data">
+        <div class="row mb-3">
+            <div class="col-md-4">
+                <label class="form-label">Name:</label>
+                <input class="form-control" type="text" name="name" value="{{ student.get_name() }}" required>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label">Program:</label>
+                <select class="form-select" name="program" required>
+                    <option value="CN" {% if student.get_program() == 'CN' %}selected{% endif %}>Certificate in Nursing</option>
+                    <option value="CM" {% if student.get_program() == 'CM' %}selected{% endif %}>Certificate in Midwifery</option>
+                </select>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label">Academic Year:</label>
+                <input class="form-control" type="number" name="year" value="{{ student.get_year() }}" required>
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <div class="col-md-4">
+                <label class="form-label">UNMEB Exam Number:</label>
+                <input class="form-control" type="text" name="unmeb_no" value="{{ student.get_unmeb_no() }}">
+            </div>
+            <div class="col-md-4">
+                <label class="form-label">NSIN Number:</label>
+                <input class="form-control" type="text" name="nsin" value="{{ student.get_nsin() }}">
+            </div>
+            <div class="col-md-4">
+                <label class="form-label">Date of Birth:</label>
+                <input class="form-control" type="date" name="dob" value="{{ student.get_dob() }}">
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <label class="form-label">Nationality:</label>
+                <input class="form-control" type="text" name="nationality" value="{{ student.get_nationality() }}">
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">Year of Entry:</label>
+                <input class="form-control" type="date" name="year_of_entry" value="{{ student.get_year_of_entry() }}">
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">Year of Completion:</label>
+                <input class="form-control" type="date" name="year_of_completion" value="{{ student.get_year_of_completion() }}">
+            </div>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Update Profile Photo:</label>
+            <input class="form-control" type="file" name="photo" accept="image/*">
+            {% if student.get_photo() %}
+                <div class="mt-2">
+                    <img src="{{ url_for('static', filename='uploads/' ~ student.get_photo()) }}" alt="Current Photo" class="img-thumbnail" width="120">
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="text-center mt-4">
+            <button class="btn btn-primary px-4" type="submit">Save Changes</button>
+            <a class="btn btn-secondary ms-2" href="{{ url_for('view_students') }}">Cancel</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

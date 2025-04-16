@@ -1,0 +1,186 @@
+[
+    {
+        "id": "a30104bc-ff4d-425e-92e1-396702592da8",
+        "name": "OBOIRE EDISON",
+        "nsin": "JAN23/CN/U025/001",
+        "unmeb_no": "U025/001",
+        "nationality": "UGANDAN",
+        "program": "CN",
+        "dob": "2000-07-07",
+        "entry_year": "2020",
+        "completion_year": "2023",
+        "photo": "744bb9da-dd20-4f9e-9c34-58b6ef15d722_Agwang_Martha.jpg",
+        "grades": {
+            "Year One Semester One": [
+                {
+                    "semester": "Year One Semester One",
+                    "code": "CN 111",
+                    "title": "Anatomy and Physiology I and First Aid",
+                    "marks": 67,
+                    "grade": "C+",
+                    "grade_point": 3.5
+                },
+                {
+                    "semester": "Year One Semester One",
+                    "code": "CN 112",
+                    "title": "Foundations of Nursing and Basic Computer",
+                    "marks": 89,
+                    "grade": "A",
+                    "grade_point": 5.0
+                },
+                {
+                    "semester": "Year One Semester One",
+                    "code": "CN 113",
+                    "title": "Personal and Communal Health and Microbiology",
+                    "marks": 78,
+                    "grade": "B+",
+                    "grade_point": 4.5
+                },
+                {
+                    "semester": "Year One Semester One",
+                    "code": "CN 114",
+                    "title": "Practical I",
+                    "marks": 78,
+                    "grade": "B+",
+                    "grade_point": 4.5
+                }
+            ],
+            "Year One Semester Two": [
+                {
+                    "semester": "Year One Semester Two",
+                    "code": "CN 121",
+                    "title": "Anatomy and Physiology II",
+                    "marks": 56,
+                    "grade": "D+",
+                    "grade_point": 2.5
+                },
+                {
+                    "semester": "Year One Semester Two",
+                    "code": "CN 122",
+                    "title": "Foundations of Nursing II, Sociology and Psychology",
+                    "marks": 68,
+                    "grade": "C+",
+                    "grade_point": 3.5
+                },
+                {
+                    "semester": "Year One Semester Two",
+                    "code": "CN 123",
+                    "title": "Primary Health Care",
+                    "marks": 90,
+                    "grade": "A",
+                    "grade_point": 5.0
+                },
+                {
+                    "semester": "Year One Semester Two",
+                    "code": "CN 124",
+                    "title": "Practical II",
+                    "marks": 78,
+                    "grade": "B+",
+                    "grade_point": 4.5
+                }
+            ],
+            "Year Two Semester One": [
+                {
+                    "semester": "Year Two Semester One",
+                    "code": "CN 211",
+                    "title": "Medical Nursing I and Pharmacology I",
+                    "marks": 80,
+                    "grade": "A",
+                    "grade_point": 5.0
+                },
+                {
+                    "semester": "Year Two Semester One",
+                    "code": "CN 212",
+                    "title": "Surgical Nursing I and Gynaecology",
+                    "marks": 78,
+                    "grade": "B+",
+                    "grade_point": 4.5
+                },
+                {
+                    "semester": "Year Two Semester One",
+                    "code": "CN 213",
+                    "title": "Paediatric Nursing I and Palliative Care Nursing",
+                    "marks": 65,
+                    "grade": "C+",
+                    "grade_point": 3.5
+                },
+                {
+                    "semester": "Year Two Semester One",
+                    "code": "CN 214",
+                    "title": "Practical III",
+                    "marks": 89,
+                    "grade": "A",
+                    "grade_point": 5.0
+                }
+            ],
+            "Year Two Semester Two": [
+                {
+                    "semester": "Year Two Semester Two",
+                    "code": "CN 221",
+                    "title": "Medical Nursing II & Pharmacology II",
+                    "marks": 67,
+                    "grade": "C+",
+                    "grade_point": 3.5
+                },
+                {
+                    "semester": "Year Two Semester Two",
+                    "code": "CN 222",
+                    "title": "Surgical II and Paediatric Nursing II",
+                    "marks": 89,
+                    "grade": "A",
+                    "grade_point": 5.0
+                },
+                {
+                    "semester": "Year Two Semester Two",
+                    "code": "CN 223",
+                    "title": "Mental Health Nursing and Occupational Health and Safety",
+                    "marks": 78,
+                    "grade": "B+",
+                    "grade_point": 4.5
+                },
+                {
+                    "semester": "Year Two Semester Two",
+                    "code": "CN 224",
+                    "title": "Practical IV",
+                    "marks": 90,
+                    "grade": "A",
+                    "grade_point": 5.0
+                }
+            ],
+            "Year Three Semester One": [
+                {
+                    "semester": "Year Three Semester One",
+                    "code": "CN 311",
+                    "title": "Tropical Medicine and Surgical Nursing III",
+                    "marks": 67,
+                    "grade": "C+",
+                    "grade_point": 3.5
+                },
+                {
+                    "semester": "Year Three Semester One",
+                    "code": "CN 312",
+                    "title": "Reproductive Health, Guidance and Counselling",
+                    "marks": 89,
+                    "grade": "A",
+                    "grade_point": 5.0
+                },
+                {
+                    "semester": "Year Three Semester One",
+                    "code": "CN 313",
+                    "title": "Health Services Management and Entrepreneurship",
+                    "marks": 76,
+                    "grade": "B+",
+                    "grade_point": 4.5
+                },
+                {
+                    "semester": "Year Three Semester One",
+                    "code": "CN 314",
+                    "title": "Practical V",
+                    "marks": 55,
+                    "grade": "D+",
+                    "grade_point": 2.5
+                }
+            ]
+        }
+    }
+]

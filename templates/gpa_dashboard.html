@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+{% block title %}GPA Dashboard{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    {% if student %}
+        <h2 class="text-center mb-4">📊 GPA Trend for {{ student.get_name() }}</h2>
+        <div class="card shadow-sm p-4">
+            <canvas id="gpaChart" height="100"></canvas>
+        </div>
+    {% else %}
+        <div class="alert alert-danger text-center">No student selected or student record not found.</div>
+    {% endif %}
+</div>
+
+<!-- Chart.js CDN -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    const semesterLabels = {{ labels | tojson }};
+    const gpaValues = {{ gpas | tojson }};
+
+    if (gpaValues.length > 0) {
+        const ctx = document.getElementById('gpaChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: semesterLabels,
+                datasets: [{
+                    label: 'GPA per Semester',
+                    data: gpaValues,
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    pointBackgroundColor: 'rgba(75, 192, 192, 1)',
+                    pointBorderColor: '#fff',
+                    pointHoverBackgroundColor: '#fff',
+                    pointHoverBorderColor: 'rgba(75, 192, 192, 1)',
+                    tension: 0.3
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    },
+                    title: {
+                        display: true,
+                        text: 'Semester GPA Line Chart'
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 5,
+                        title: {
+                            display: true,
+                            text: 'GPA'
+                        }
+                    },
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Semester'
+                        }
+                    }
+                }
+            }
+        });
+    }
+</script>
+{% endblock %}

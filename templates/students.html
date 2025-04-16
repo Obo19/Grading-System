@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+{% block title %}Registered Students{% endblock %}
+{% block content %}
+
+<!-- Header with Register Button -->
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="mb-0">Registered Students</h2>
+    <a href="{{ url_for('register_student') }}" class="btn btn-primary"> Register New Student</a>
+</div>
+
+<!-- Optional Search Form -->
+<form method="GET" class="mb-3">
+    <div class="input-group">
+        <input type="text" name="search" class="form-control" placeholder="Search student by name..." value="{{ query or '' }}">
+        <button class="btn btn-outline-secondary" type="submit">Search</button>
+    </div>
+</form>
+
+<!-- Student Table -->
+<table class="table table-bordered table-striped">
+    <thead class="table-light">
+        <tr>
+            <th>Name</th>
+            <th>NSIN</th>
+            <th>UNMEB No</th>
+            <th>Program</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for student in students %}
+        <tr>
+            <td>{{ student.get_name() }}</td>
+            <td>{{ student.get_nsin() }}</td>
+            <td>{{ student.get_unmeb_no() }}</td>
+            <td>{{ student.get_program() }}</td>
+            <td class="text-nowrap">
+                <!-- Enter Marks with semester filtering -->
+                {% set first_sem = student.get_semesters()[-1] if student.get_semesters() else 'Semester 1' %}
+                <a href="{{ url_for('grade_entry', student_id=student.get_id()) }}?semester={{ first_sem }}" class="btn btn-sm btn-success">📘 Enter Marks</a>
+
+                <!-- View Testimonial -->
+                <a href="{{ url_for('view_testimonial', student_id=student.get_id()) }}" target="_blank" class="btn btn-sm btn-info">📄 Testimonial</a>
+
+                <!-- View Transcript -->
+                <a href="{{ url_for('view_transcript', student_id=student.get_id()) }}" target="_blank" class="btn btn-sm btn-secondary">📑 Transcript</a>
+
+                <!-- Edit -->
+                <a href="{{ url_for('edit_student', student_id=student.get_id()) }}" class="btn btn-sm btn-warning">✏️ Edit</a>
+
+                <!-- Delete -->
+                <button class="btn btn-sm btn-danger"
+                        data-bs-toggle="modal"
+                        data-bs-target="#confirmDeleteModal"
+                        data-id="{{ student.get_id() }}"
+                        data-name="{{ student.get_name() }}">
+                        Delete
+                </button>
+            </td>
+        </tr>
+        {% else %}
+        <tr>
+            <td colspan="5" class="text-center text-muted">No students registered yet.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header bg-danger text-white">
+        <h5 class="modal-title" id="confirmDeleteLabel">Confirm Delete</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        Are you sure you want to delete <strong id="studentName"></strong>?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <a id="confirmDeleteBtn" class="btn btn-danger">Yes, Delete</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- JS for modal logic -->
+<script>
+  const deleteModal = document.getElementById('confirmDeleteModal');
+  deleteModal.addEventListener('show.bs.modal', function (event) {
+    const button = event.relatedTarget;
+    const studentId = button.getAttribute('data-id');
+    const studentName = button.getAttribute('data-name');
+
+    document.getElementById('studentName').textContent = studentName;
+    document.getElementById('confirmDeleteBtn').href = "/delete_student/" + studentId;
+  });
+</script>
+
+{% endblock %}
