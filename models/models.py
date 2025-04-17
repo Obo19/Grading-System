@@ -191,6 +191,6 @@ class StudentManager(DataStore):
     def get_all_students(self):
         return self._students
 
-    # Newly added method for deletion
+    # method for deletion
     def delete_student(self, student_id):
         self._students = [s for s in self._students if s.get_id() != student_id]
