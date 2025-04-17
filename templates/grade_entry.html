@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% block title %}Grade Entry{% endblock %}
+
 {% block content %}
 
 <h2 class="mb-4">Grade Entry for {{ student.get_name() }}</h2>
@@ -26,6 +27,7 @@
                 <th>Code</th>
                 <th>Title</th>
                 <th>Marks</th>
+                <th>Retake (if < 50)</th>
                 <th>Grade</th>
                 <th>Grade Point</th>
             </tr>
@@ -34,21 +36,39 @@
             {% for course in courses %}
             {% set i = loop.index0 %}
             <tr>
+                <!-- Course Code -->
                 <td>
                     <input type="text" name="code_{{ i }}" class="form-control" value="{{ course.code }}" readonly>
                 </td>
+
+                <!-- Course Title -->
                 <td>
                     <input type="text" name="title_{{ i }}" class="form-control" value="{{ course.title }}" readonly>
                 </td>
+
+                <!-- Marks -->
                 <td>
                     <input type="number" name="marks_{{ i }}" id="marks_{{ i }}" class="form-control"
                         value="{{ existing[i].marks if existing[i] is defined else '' }}"
-                        oninput="updateGrade({{ i }})">
+                        oninput="updateGrade({{ i }}); toggleRetake({{ i }});">
                 </td>
+
+                <!-- Retake Marks -->
+                <td>
+                    <div id="retake_{{ i }}" style="{% if existing[i] is defined and existing[i].marks < 50 %}display:block{% else %}display:none{% endif %}">
+                        <input type="number" name="retake_{{ i }}" class="form-control mt-1"
+                               value="{{ existing[i].retake if existing[i] is defined and existing[i].retake is defined else '' }}"
+                               placeholder="Enter Retake Mark">
+                    </div>
+                </td>
+
+                <!-- Grade -->
                 <td>
                     <input type="text" name="grade_{{ i }}" id="grade_{{ i }}" class="form-control"
                         value="{{ existing[i].grade if existing[i] is defined else '' }}" readonly>
                 </td>
+
+                <!-- Grade Point -->
                 <td>
                     <input type="number" step="0.1" name="point_{{ i }}" id="point_{{ i }}" class="form-control"
                         value="{{ existing[i].grade_point if existing[i] is defined else '' }}" readonly>
@@ -87,6 +107,18 @@ function updateGrade(index) {
 
     gradeField.value = grade;
     pointField.value = point;
+}
+
+function toggleRetake(index) {
+    const marksInput = document.getElementById(`marks_${index}`);
+    const retakeDiv = document.getElementById(`retake_${index}`);
+    const marks = parseFloat(marksInput.value);
+
+    if (!isNaN(marks) && marks < 50) {
+        retakeDiv.style.display = "block";
+    } else {
+        retakeDiv.style.display = "none";
+    }
 }
 </script>
 

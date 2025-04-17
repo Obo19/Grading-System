@@ -15,12 +15,9 @@
 
 <!-- HEADER SECTION -->
 <div class="row align-items-start mb-4">
-    <!-- Logo -->
     <div class="col-2 text-start">
         <img src="{{ url_for('static', filename='uploads/School logo.jpg') }}" alt="School Logo" width="100">
     </div>
-
-    <!-- Centered Title -->
     <div class="col-8 text-center">
         <h4 class="mb-1">NGORA HOSPITAL SCHOOL OF NURSING AND MIDWIFERY</h4>
         <small>
@@ -28,10 +25,8 @@
             P.O Box 5, Ngora, Uganda<br>
             Tel: 0392825764 | Email: ngoranurses@yahoo.com
         </small>
-    <h4>TESTIMONIAL</h4>
+        <h4 class="mt-2">TESTIMONIAL</h4>
     </div>
-
-    <!-- Student Photo -->
     <div class="col-2 text-end">
         {% if student.get_photo() %}
         <img src="{{ url_for('static', filename='uploads/' ~ student.get_photo()) }}" alt="Student Photo" width="100">
@@ -57,7 +52,7 @@
 
 <!-- ACADEMIC RESULTS -->
 {% for semester in student.get_semesters() %}
-    {% set courses = student.get_courses_by_semester(semester) %}
+    {% set courses = student.get_raw_courses_by_semester(semester) %}
     {% if courses %}
     <h5 class="mt-4">{{ semester }}</h5>
     <table class="table table-bordered">
@@ -75,7 +70,13 @@
             <tr>
                 <td>{{ course.code }}</td>
                 <td>{{ course.title }}</td>
-                <td>{{ course.marks or '---' }}</td>
+                <td class="text-start">
+                    {% if course.original_marks is defined and course.original_marks < 50 and course.marks >= 50 %}
+                        {{ course.marks }} RT
+                    {% else %}
+                        {{ course.marks or '---' }}
+                    {% endif %}
+                </td>
                 <td>{{ course.grade or '---' }}</td>
                 <td>{{ course.grade_point or '---' }}</td>
             </tr>
@@ -91,6 +92,8 @@
 <p class="mt-4"><strong>Issued on:</strong> {{ current_date }}</p>
 <p>This testimonial is issued upon request of the student for official use.</p>
 
+<p class="mt-2"><em><strong>Note:</strong> RT = Retaken course (initial mark was below 50).</em></p>
+
 <!-- SIGNATURE -->
 <div class="row mt-5">
     <div class="col text-end" style="margin-top: 80px;">
@@ -99,7 +102,6 @@
     </div>
 </div>
 
-<!-- EXPORT TO PDF BUTTON -->
 <button onclick="window.print()" 
         class="btn btn-light border shadow-sm position-fixed top-0 end-0 m-3 d-print-none d-none d-md-block"
         title="Export to PDF">

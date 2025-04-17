@@ -59,7 +59,7 @@ class Course:
 # Inheritance: Student inherits from Person
 # ------------------------------------------------------
 class Student(Person):
-    def __init__(self, id, name, nsin, unmeb_no, nationality, program, dob,entry_year, completion_year, photo=None, grades=None):
+    def __init__(self, id, name, nsin, unmeb_no, nationality, program, dob, entry_year, completion_year, photo=None, grades=None):
         super().__init__(name, nationality, dob)
         self.__id = id
         self.__nsin = nsin
@@ -81,29 +81,63 @@ class Student(Person):
     def get_entry_year(self): return self.__entry_year
     def get_completion_year(self): return self.__completion_year
     def get_photo(self): return self.__photo
+    def get_semesters(self): return list(self.__grades.keys())
 
-    def get_semesters(self):
-        return list(self.__grades.keys())
-
-    def get_courses_by_semester(self, semester):
+    # ✅ Raw version for Testimonial (includes original_marks for RT)
+    def get_raw_courses_by_semester(self, semester):
         return self.__grades.get(semester, [])
 
+    # ✅ Adjusted version for Transcript & GPA (uses retake if valid)
+    def get_courses_by_semester(self, semester):
+        courses = self.__grades.get(semester, [])
+        adjusted_courses = []
+
+        for course in courses:
+            adjusted = course.copy()
+
+            # Apply retake mark if original < 50 and retake is valid
+            if 'retake' in adjusted and adjusted.get('marks', 0) < 50:
+                adjusted['original_marks'] = adjusted['marks']
+                adjusted['marks'] = adjusted['retake']
+                adjusted['grade'], adjusted['grade_point'] = get_grade_and_point(adjusted['retake'])
+
+            adjusted_courses.append(adjusted)
+
+        return adjusted_courses
+
+    # ✅ Grade update with retake and original mark logic
     def update_grades(self, semester, course_list):
         updated = []
         for course in course_list:
             marks = course.get("marks")
+            retake = course.get("retake")
+
+            # Get grade/point for initial marks
             if marks is not None:
                 grade, point = get_grade_and_point(marks)
             else:
                 grade, point = None, None
-            updated.append({
+
+            course_data = {
                 "semester": semester,
                 "code": course["code"],
                 "title": course["title"],
                 "marks": marks,
                 "grade": grade,
                 "grade_point": point
-            })
+            }
+
+            if retake is not None:
+                course_data["retake"] = retake
+
+                # Save original marks if retake is valid (i.e. marks < 50, retake ≥ 50)
+                if marks is not None and marks < 50 and retake >= 50:
+                    course_data["original_marks"] = marks
+                    course_data["marks"] = retake
+                    course_data["grade"], course_data["grade_point"] = get_grade_and_point(retake)
+
+            updated.append(course_data)
+
         self.__grades[semester] = updated
 
     def calculate_gpa(self, semester):
@@ -191,6 +225,5 @@ class StudentManager(DataStore):
     def get_all_students(self):
         return self._students
 
-    # method for deletion
     def delete_student(self, student_id):
         self._students = [s for s in self._students if s.get_id() != student_id]

@@ -152,9 +152,10 @@
                     "semester": "Year Three Semester One",
                     "code": "CN 311",
                     "title": "Tropical Medicine and Surgical Nursing III",
-                    "marks": 67,
-                    "grade": "C+",
-                    "grade_point": 3.5
+                    "marks": 45,
+                    "grade": "F",
+                    "grade_point": 0.0,
+                    "retake": 67
                 },
                 {
                     "semester": "Year Three Semester One",
@@ -338,7 +339,8 @@
                     "title": "Tropical Medicine and Surgical Nursing III",
                     "marks": 49,
                     "grade": "F",
-                    "grade_point": 0.0
+                    "grade_point": 0.0,
+                    "retake": 67
                 },
                 {
                     "semester": "Year Three Semester One",
@@ -363,6 +365,56 @@
                     "marks": 67,
                     "grade": "C+",
                     "grade_point": 3.5
+                }
+            ]
+        }
+    },
+    {
+        "id": "e51100ee-d5b5-470a-8a12-1f154e15c5ab",
+        "name": "AKELLO HELLO",
+        "nsin": "JAN23/CN/U025/001",
+        "unmeb_no": "U025/001",
+        "nationality": "UGANDAN",
+        "program": "CN",
+        "dob": "2000-06-06",
+        "entry_year": "2019",
+        "completion_year": "2023",
+        "photo": "8220517c-2109-4df9-a378-b77e2e2c538c_Agwang_Martha.jpg",
+        "grades": {
+            "Year One Semester One": [
+                {
+                    "semester": "Year One Semester One",
+                    "code": "CN 111",
+                    "title": "Anatomy and Physiology I and First Aid",
+                    "marks": 87,
+                    "grade": "A",
+                    "grade_point": 5.0,
+                    "retake": 87,
+                    "original_marks": 45
+                },
+                {
+                    "semester": "Year One Semester One",
+                    "code": "CN 112",
+                    "title": "Foundations of Nursing and Basic Computer",
+                    "marks": 78,
+                    "grade": "B+",
+                    "grade_point": 4.5
+                },
+                {
+                    "semester": "Year One Semester One",
+                    "code": "CN 113",
+                    "title": "Personal and Communal Health and Microbiology",
+                    "marks": 67,
+                    "grade": "C+",
+                    "grade_point": 3.5
+                },
+                {
+                    "semester": "Year One Semester One",
+                    "code": "CN 114",
+                    "title": "Practical I",
+                    "marks": 87,
+                    "grade": "A",
+                    "grade_point": 5.0
                 }
             ]
         }

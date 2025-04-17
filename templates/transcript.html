@@ -1,5 +1,6 @@
 {% extends "base.html" %}
-{% block title %}Transcript{% endblock %}
+{% block title %}Academic Transcript{% endblock %}
+
 {% block content %}
 
 <style>
@@ -13,103 +14,108 @@
 }
 </style>
 
-{% if all_filled %}
+<div class="container mt-4">
+    <!-- Header Section -->
+    <div class="row align-items-start mb-4">
+        <!-- School Logo -->
+        <div class="col-2 text-start">
+            <img src="{{ url_for('static', filename='uploads/School logo.jpg') }}" alt="School Logo" width="100">
+        </div>
 
-<!-- Header: Logo, School Info, and Student Photo -->
-<div class="row align-items-start mb-4">
-    <div class="col-2 text-start">
-        <img src="{{ url_for('static', filename='uploads/School logo.jpg') }}" alt="School Logo" width="90">
+        <!-- Title Centered -->
+        <div class="col-8 text-center">
+            <h4 class="mb-1">NGORA HOSPITAL SCHOOL OF NURSING AND MIDWIFERY</h4>
+            <small>
+                Office of the Academic Registrar<br>
+                P.O Box 5, Ngora, Uganda<br>
+                Tel: 0392825764 | Email: ngoranurses@yahoo.com
+            </small>
+            <h4 class="mt-2">ACADEMIC TRANSCRIPT</h4>
+        </div>
+
+        <!-- Student Photo -->
+        <div class="col-2 text-end">
+            {% if student.get_photo() %}
+            <img src="{{ url_for('static', filename='uploads/' ~ student.get_photo()) }}" alt="Student Photo" width="100">
+            {% endif %}
+        </div>
     </div>
-    <div class="col-8 text-center">
-        <h4 class="mb-1">NGORA HOSPITAL SCHOOL OF NURSING AND MIDWIFERY</h4>
-        <small>
-            Office of the Academic Registrar<br>
-            P.O Box 5, Ngora, Uganda<br>
-            Tel: 0392825764 | Email: ngoranurses@yahoo.com
-            
-        </small>
-        <h4>ACADEMIC TRANSCRIPT</h4>
+
+    <!-- Student Information -->
+    <div class="row mb-3">
+        <div class="col-md-3"><strong>Name:</strong> {{ student.get_name() }}</div>
+        <div class="col-md-3"><strong>Nationality:</strong> {{ student.get_nationality() }}</div>
+        <div class="col-md-3"><strong>Program:</strong> {{ student.get_program() }}</div>
+        <div class="col-md-3"><strong>Date of Birth:</strong> {{ student.get_dob() }}</div>
     </div>
-    <div class="col-2 text-end">
-        {% if student.get_photo() %}
-        <img src="{{ url_for('static', filename='uploads/' ~ student.get_photo()) }}" alt="Student Photo" width="100">
+    <div class="row mb-4">
+        <div class="col-md-3"><strong>UNMEB No:</strong> {{ student.get_unmeb_no() }}</div>
+        <div class="col-md-3"><strong>NSIN:</strong> {{ student.get_nsin() }}</div>
+        <div class="col-md-3"><strong>Entry Year:</strong> {{ student.get_entry_year() }}</div>
+        <div class="col-md-3"><strong>Completion Year:</strong> {{ student.get_completion_year() }}</div>
+    </div>
+
+    <hr>
+
+    <!-- Academic Records -->
+    {% for semester in student.get_semesters() %}
+        {% set courses = student.get_courses_by_semester(semester) %}
+        {% if courses %}
+        <h5 class="mt-4">{{ semester }}</h5>
+        <table class="table table-bordered">
+            <thead class="table-light">
+                <tr>
+                    <th>Code</th>
+                    <th>Course</th>
+                    <th>Marks</th>
+                    <th>Grade</th>
+                    <th>Grade Point</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for course in courses %}
+                <tr>
+                    <td>{{ course.code }}</td>
+                    <td>{{ course.title }}</td>
+                    <td>
+                        {% if course.marks is defined and course.marks < 50 and course.retake is defined %}
+                            RT {{ course.retake }}
+                        {% else %}
+                            {{ course.marks or '---' }}
+                        {% endif %}
+                    </td>
+                    <td>{{ course.grade or '---' }}</td>
+                    <td>{{ course.grade_point or '---' }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <p><strong>Semester GPA:</strong> {{ student.calculate_gpa(semester) }}</p>
         {% endif %}
+    {% endfor %}
+
+    <hr>
+    <h5 class="text-end">Cumulative GPA (CGPA): {{ student.calculate_cgpa() }}</h5>
+    <p class="mt-4"><strong>Issued on:</strong> {{ current_date }}</p>
+    <p>This transcript is issued upon request of the student for official use.</p>
+
+    <!-- Footnote -->
+    <p class="mt-2"><em><strong>Note:</strong> RT = Retake mark after initial failure.</em></p>
+
+    <!-- Signature -->
+    <div class="row mt-5">
+        <div class="col text-end" style="margin-top: 80px;">
+            <p><strong>__________________________</strong></p>
+            <p><strong>Registrar</strong><br>NGORA HOSPITAL SCHOOL OF NURSING AND MIDWIFERY</p>
+        </div>
     </div>
+
+    <!-- Print Button -->
+    <button onclick="window.print()" 
+            class="btn btn-light border shadow-sm position-fixed top-0 end-0 m-3 d-print-none d-none d-md-block"
+            title="Export to PDF">
+        🖨️
+    </button>
 </div>
-
-<!-- Student Information -->
-<div class="row mb-3">
-    <div class="col-md-3"><strong>Name:</strong> {{ student.get_name() }}</div>
-    <div class="col-md-3"><strong>Nationality:</strong> {{ student.get_nationality() }}</div>
-    <div class="col-md-3"><strong>Program:</strong> {{ student.get_program() }}</div>
-    <div class="col-md-3"><strong>Date of Birth:</strong> {{ student.get_dob() }}</div>
-</div>
-<div class="row mb-4">
-    <div class="col-md-3"><strong>UNMEB No:</strong> {{ student.get_unmeb_no() }}</div>
-    <div class="col-md-3"><strong>NSIN:</strong> {{ student.get_nsin() }}</div>
-    <div class="col-md-3"><strong>Entry Year:</strong> {{ student.get_entry_year() }}</div>
-    <div class="col-md-3"><strong>Completion Year:</strong> {{ student.get_completion_year() }}</div>
-</div>
-
-<hr>
-
-<!-- Transcript Tables -->
-{% for semester in student.get_semesters() %}
-    {% set courses = student.get_courses_by_semester(semester) %}
-    {% if courses %}
-    <h6 class="mt-3">{{ semester }}</h6>
-    <table class="table table-bordered table-sm small">
-        <thead>
-            <tr>
-                <th>Code</th>
-                <th>Course</th>
-                <th>Marks</th>
-                <th>Grade</th>
-                <th>Grade Point</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for course in courses %}
-            <tr>
-                <td>{{ course.code }}</td>
-                <td>{{ course.title }}</td>
-                <td>{{ course.marks or '---' }}</td>
-                <td>{{ course.grade or '---' }}</td>
-                <td>{{ course.grade_point or '---' }}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-    <p class="mb-2"><strong>Semester GPA:</strong> {{ student.calculate_gpa(semester) }}</p>
-    {% endif %}
-{% endfor %}
-
-<hr>
-<h6 class="text-end">Cumulative GPA (CGPA): {{ student.calculate_cgpa() }}</h6>
-<p class="mt-3"><strong>Issued on:</strong> {{ current_date }}</p>
-
-<!-- Registrar Signature -->
-<div class="row mt-5">
-    <div class="col text-end" style="margin-top: 60px;">
-        <p><strong>__________________________</strong></p>
-        <p><strong>Registrar</strong><br>NGORA HOSPITAL SCHOOL OF NURSING AND MIDWIFERY</p>
-    </div>
-</div>
-
-<!-- Export Button -->
-<button onclick="window.print()" 
-        class="btn btn-light border shadow-sm position-fixed top-0 end-0 m-3 d-print-none d-none d-md-block"
-        title="Export to PDF">
-    🖨️
-</button>
-
-{% else %}
-
-<!-- Alert if Incomplete -->
-<div class="alert alert-warning">
-    Transcript can only be generated when results for all 5 semesters have been entered.
-</div>
-
-{% endif %}
 
 {% endblock %}

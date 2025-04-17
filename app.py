@@ -131,7 +131,6 @@ def grade_entry(student_id):
 
     selected_semester = request.form.get('semester') or request.args.get('semester')
     available_semesters = sorted(list(set([c['semester'] for c in cleaned_courses])))
-
     courses = [c for c in cleaned_courses if c['semester'] == selected_semester] if selected_semester else []
     existing = student.get_courses_by_semester(selected_semester) if selected_semester else []
 
@@ -141,21 +140,29 @@ def grade_entry(student_id):
             code = request.form.get(f'code_{i}')
             title = request.form.get(f'title_{i}')
             marks = request.form.get(f'marks_{i}')
+            retake = request.form.get(f'retake_{i}')
+
             if code and title:
-                updated_courses.append({
+                course_data = {
                     "semester": selected_semester,
                     "code": code,
                     "title": title,
                     "marks": int(marks) if marks else None
-                })
+                }
+
+                if marks and int(marks) < 50 and retake:
+                    course_data["retake"] = int(retake)
+
+                updated_courses.append(course_data)
+
         student.update_grades(selected_semester, updated_courses)
         student_manager.save_to_json()
-        flash(" Grades saved successfully!")
+        flash("Grades saved successfully!")
         return redirect(url_for('home'))
 
     return render_template("grade_entry.html", student=student, courses=courses,
-                existing=existing, selected_semester=selected_semester,
-                available_semesters=available_semesters, grading_scale=grading_scale)
+                           existing=existing, selected_semester=selected_semester,
+                           available_semesters=available_semesters, grading_scale=grading_scale)
 
 @app.route('/testimonial/<student_id>')
 def view_testimonial(student_id):
@@ -174,7 +181,6 @@ def view_transcript(student_id):
         flash("Student not found.")
         return redirect(url_for('home'))
 
-    # Match actual semester naming
     required_semesters = [
         'Year One Semester One',
         'Year One Semester Two',
@@ -183,7 +189,6 @@ def view_transcript(student_id):
         'Year Three Semester One'
     ]
 
-    # Check that each required semester has at least one course
     all_filled = all(len(student.get_courses_by_semester(sem)) > 0 for sem in required_semesters)
 
     current_date = datetime.now().strftime("%d %B %Y")
