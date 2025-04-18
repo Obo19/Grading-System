@@ -1,102 +1,67 @@
-[
-    {
-        "semester": "Year One Semester One",
-        "code": "CN 111",
-        "title": "Anatomy and Physiology I and First Aid"
+{
+    "CN": {
+      "Year One Semester One": [
+        { "semester": "Year One Semester One", "code": "CN 111", "title": "Anatomy and Physiology I and First Aid" },
+        { "semester": "Year One Semester One", "code": "CN 112", "title": "Foundations of Nursing and Basic Computer" },
+        { "semester": "Year One Semester One", "code": "CN 113", "title": "Personal and Communal Health and Microbiology" },
+        { "semester": "Year One Semester One", "code": "CN 114", "title": "Practical I" }
+      ],
+      "Year One Semester Two": [
+        { "semester": "Year One Semester Two", "code": "CN 121", "title": "Anatomy and physiology II" },
+        { "semester": "Year One Semester Two", "code": "CN 122", "title": "Foundations of Nursing II, Sociology and Psychology" },
+        { "semester": "Year One Semester Two", "code": "CN 123", "title": "Primary Health Care" },
+        { "semester": "Year One Semester Two", "code": "CN 124", "title": "Practical II" }
+      ],
+      "Year Two Semester One": [
+        { "semester": "Year Two Semester One", "code": "CN 211", "title": "Medical Nursing I and Pharmacology I" },
+        { "semester": "Year Two Semester One", "code": "CN 212", "title": "Surgical Nursing I and Gynaecology" },
+        { "semester": "Year Two Semester One", "code": "CN 213", "title": "Paediatric Nursing I and Palliative Care Nursing" },
+        { "semester": "Year Two Semester One", "code": "CN 214", "title": "Practical III" }
+      ],
+      "Year Two Semester Two": [
+        { "semester": "Year Two Semester Two", "code": "CN 221", "title": "Medical Nursing II & Pharmacology II" },
+        { "semester": "Year Two Semester Two", "code": "CN 222", "title": "Surgical II and Paediatric Nursing II" },
+        { "semester": "Year Two Semester Two", "code": "CN 223", "title": "Mental Health Nursing and Occupational Health and safety" },
+        { "semester": "Year Two Semester Two", "code": "CN 224", "title": "Practical IV" }
+      ],
+      "Year Three Semester One": [
+        { "semester": "Year Three Semester One", "code": "CN 311", "title": "Tropical Medicine and Surgical Nursing III" },
+        { "semester": "Year Three Semester One", "code": "CN 312", "title": "Reproductive Health, Guidance and Counselling" },
+        { "semester": "Year Three Semester One", "code": "CN 313", "title": "Health Services Management and Entrepreneurship" },
+        { "semester": "Year Three Semester One", "code": "CN 314", "title": "Practical V" }
+      ]
     },
-    {
-        "semester": "Year One Semester One",
-        "code": "CN 112",
-        "title": "Foundations of Nursing and Basic Computer"
-    },
-    {
-        "semester": "Year One Semester One",
-        "code": "CN 113",
-        "title": "Personal and Communal Health and Microbiology"
-    },
-    {
-        "semester": "Year One Semester One",
-        "code": "CN 114",
-        "title": "Practical I"
-    },
-    {
-        "semester": "Year One Semester Two",
-        "code": "CN 121",
-        "title": "Anatomy and Physiology II"
-    },
-    {
-        "semester": "Year One Semester Two",
-        "code": "CN 122",
-        "title": "Foundations of Nursing II, Sociology and Psychology"
-    },
-    {
-        "semester": "Year One Semester Two",
-        "code": "CN 123",
-        "title": "Primary Health Care"
-    },
-    {
-        "semester": "Year One Semester Two",
-        "code": "CN 124",
-        "title": "Practical II"
-    },
-    {
-        "semester": "Year Two Semester One",
-        "code": "CN 211",
-        "title": "Medical Nursing I and Pharmacology I"
-    },
-    {
-        "semester": "Year Two Semester One",
-        "code": "CN 212",
-        "title": "Surgical Nursing I and Gynaecology"
-    },
-    {
-        "semester": "Year Two Semester One",
-        "code": "CN 213",
-        "title": "Paediatric Nursing I and Palliative Care Nursing"
-    },
-    {
-        "semester": "Year Two Semester One",
-        "code": "CN 214",
-        "title": "Practical III"
-    },
-    {
-        "semester": "Year Two Semester Two",
-        "code": "CN 221",
-        "title": "Medical Nursing II & Pharmacology II"
-    },
-    {
-        "semester": "Year Two Semester Two",
-        "code": "CN 222",
-        "title": "Surgical II and Paediatric Nursing II"
-    },
-    {
-        "semester": "Year Two Semester Two",
-        "code": "CN 223",
-        "title": "Mental Health Nursing and Occupational Health and Safety"
-    },
-    {
-        "semester": "Year Two Semester Two",
-        "code": "CN 224",
-        "title": "Practical IV"
-    },
-    {
-        "semester": "Year Three Semester One",
-        "code": "CN 311",
-        "title": "Tropical Medicine and Surgical Nursing III"
-    },
-    {
-        "semester": "Year Three Semester One",
-        "code": "CN 312",
-        "title": "Reproductive Health, Guidance and Counselling"
-    },
-    {
-        "semester": "Year Three Semester One",
-        "code": "CN 313",
-        "title": "Health Services Management and Entrepreneurship"
-    },
-    {
-        "semester": "Year Three Semester One",
-        "code": "CN 314",
-        "title": "Practical V"
+    "CM": {
+      "Year One Semester One": [
+        { "semester": "Year One Semester One", "code": "CM111", "title": "Anatomy and Physiology I and First Aid" },
+        { "semester": "Year One Semester One", "code": "CM112", "title": "Foundations of Nursing and Basic Computer" },
+        { "semester": "Year One Semester One", "code": "CM113", "title": "Personal and Communal Health and Microbiology" },
+        { "semester": "Year One Semester One", "code": "CM114", "title": "Practical I" }
+      ],
+      "Year One Semester Two": [
+        { "semester": "Year One Semester Two", "code": "CM121", "title": "Anatomy and Physiology II" },
+        { "semester": "Year One Semester Two", "code": "CM122", "title": "Foundations of Nursing II, Sociology and Psychology" },
+        { "semester": "Year One Semester Two", "code": "CM123", "title": "Primary Health Care" },
+        { "semester": "Year One Semester Two", "code": "CM124", "title": "Practical II" }
+      ],
+      "Year Two Semester One": [
+        { "semester": "Year Two Semester One", "code": "CM211", "title": "Obstetric Anatomy" },
+        { "semester": "Year Two Semester One", "code": "CM212", "title": "Midwifery I and Pharmacology I" },
+        { "semester": "Year Two Semester One", "code": "CM213", "title": "Paediatric Nursing I and Palliative Care Nursing" },
+        { "semester": "Year Two Semester One", "code": "CM214", "title": "Practical III" }
+      ],
+      "Year Two Semester Two": [
+        { "semester": "Year Two Semester Two", "code": "CM221", "title": "Midwifery II and Tropical Medicine" },
+        { "semester": "Year Two Semester Two", "code": "CM222", "title": "Obstetric Pharmacology and Paediatric Nursing II" },
+        { "semester": "Year Two Semester Two", "code": "CM223", "title": "Community Health Nursing, Occupational Health and Safety" },
+        { "semester": "Year Two Semester Two", "code": "CM224", "title": "Practical IV" }
+      ],
+      "Year Three Semester One": [
+        { "semester": "Year Three Semester One", "code": "CM311", "title": "Gynaecology and Reproductive Health" },
+        { "semester": "Year Three Semester One", "code": "CM312", "title": "Mental Health Nursing, Guidance and Counselling" },
+        { "semester": "Year Three Semester One", "code": "CM313", "title": "Health Service Management and Entrepreneurship" },
+        { "semester": "Year Three Semester One", "code": "CM314", "title": "Practical V" }
+      ]
     }
-]
+  }
+  

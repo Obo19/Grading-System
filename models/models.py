@@ -19,10 +19,11 @@ def get_grade_and_point(marks):
 # Abstract Class (Abstraction) for Person
 # ------------------------------------------------------
 class Person(ABC):
-    def __init__(self, name, nationality, dob):
+    def __init__(self, name, nationality, dob, gender=None):
         self._name = name
         self._nationality = nationality
         self._dob = dob
+        self._gender = gender
 
     @abstractmethod
     def get_name(self): pass
@@ -32,6 +33,9 @@ class Person(ABC):
 
     @abstractmethod
     def get_dob(self): pass
+
+    def get_gender(self):
+        return self._gender
 
 # ------------------------------------------------------
 # Encapsulation: Course Class
@@ -56,11 +60,11 @@ class Course:
         }
 
 # ------------------------------------------------------
-# Inheritance: Student inherits from Person
+# Student Class (Inheritance from Person)
 # ------------------------------------------------------
 class Student(Person):
-    def __init__(self, id, name, nsin, unmeb_no, nationality, program, dob, entry_year, completion_year, photo=None, grades=None):
-        super().__init__(name, nationality, dob)
+    def __init__(self, id, name, nsin, unmeb_no, nationality, program,dob, entry_year, completion_year, gender=None, photo=None, grades=None):
+        super().__init__(name, nationality, dob, gender)
         self.__id = id
         self.__nsin = nsin
         self.__unmeb_no = unmeb_no
@@ -70,7 +74,6 @@ class Student(Person):
         self.__photo = photo
         self.__grades = grades or {}
 
-    # --- Getters ---
     def get_id(self): return self.__id
     def get_name(self): return self._name
     def get_nsin(self): return self.__nsin
@@ -81,38 +84,29 @@ class Student(Person):
     def get_entry_year(self): return self.__entry_year
     def get_completion_year(self): return self.__completion_year
     def get_photo(self): return self.__photo
+    def get_gender(self): return self._gender
     def get_semesters(self): return list(self.__grades.keys())
 
-    # ✅ Raw version for Testimonial (includes original_marks for RT)
     def get_raw_courses_by_semester(self, semester):
         return self.__grades.get(semester, [])
 
-    # ✅ Adjusted version for Transcript & GPA (uses retake if valid)
     def get_courses_by_semester(self, semester):
         courses = self.__grades.get(semester, [])
         adjusted_courses = []
-
         for course in courses:
             adjusted = course.copy()
-
-            # Apply retake mark if original < 50 and retake is valid
             if 'retake' in adjusted and adjusted.get('marks', 0) < 50:
                 adjusted['original_marks'] = adjusted['marks']
                 adjusted['marks'] = adjusted['retake']
                 adjusted['grade'], adjusted['grade_point'] = get_grade_and_point(adjusted['retake'])
-
             adjusted_courses.append(adjusted)
-
         return adjusted_courses
 
-    # ✅ Grade update with retake and original mark logic
     def update_grades(self, semester, course_list):
         updated = []
         for course in course_list:
             marks = course.get("marks")
             retake = course.get("retake")
-
-            # Get grade/point for initial marks
             if marks is not None:
                 grade, point = get_grade_and_point(marks)
             else:
@@ -129,8 +123,6 @@ class Student(Person):
 
             if retake is not None:
                 course_data["retake"] = retake
-
-                # Save original marks if retake is valid (i.e. marks < 50, retake ≥ 50)
                 if marks is not None and marks < 50 and retake >= 50:
                     course_data["original_marks"] = marks
                     course_data["marks"] = retake
@@ -167,12 +159,13 @@ class Student(Person):
             "dob": self._dob,
             "entry_year": self.__entry_year,
             "completion_year": self.__completion_year,
+            "gender": self._gender,
             "photo": self.__photo,
             "grades": self.__grades
         }
 
 # ------------------------------------------------------
-# Polymorphism: DataStore Interface
+# Abstract Base Class for Data Store
 # ------------------------------------------------------
 class DataStore(ABC):
     @abstractmethod
@@ -182,7 +175,7 @@ class DataStore(ABC):
     def save_to_json(self): pass
 
 # ------------------------------------------------------
-# StudentManager Implements DataStore
+# StudentManager Class
 # ------------------------------------------------------
 class StudentManager(DataStore):
     def __init__(self, json_path="data/students.json"):
@@ -193,14 +186,30 @@ class StudentManager(DataStore):
         if os.path.exists(self._json_path):
             with open(self._json_path, "r") as f:
                 data = json.load(f)
-                self._students = [Student(**student_data) for student_data in data]
+                self._students = []
+                for s in data:
+                    student = Student(
+                        id=s["id"],
+                        name=s["name"],
+                        nsin=s.get("nsin", ""),
+                        unmeb_no=s["unmeb_no"],
+                        nationality=s["nationality"],
+                        program=s["program"],
+                        dob=s["dob"],
+                        entry_year=s["entry_year"],
+                        completion_year=s["completion_year"],
+                        gender=s.get("gender", ""),
+                        photo=s.get("photo"),
+                        grades=s.get("grades", {})
+                    )
+                    self._students.append(student)
 
     def save_to_json(self):
         with open(self._json_path, "w") as f:
             json.dump([student.to_dict() for student in self._students], f, indent=4)
 
     def add_student(self, name, student_id, nsin, unmeb_no, nationality, program,
-                    dob, entry_year, completion_year, photo):
+                    dob, entry_year, completion_year, gender, photo):
         student = Student(
             id=student_id,
             name=name,
@@ -211,6 +220,7 @@ class StudentManager(DataStore):
             dob=dob,
             entry_year=entry_year,
             completion_year=completion_year,
+            gender=gender,
             photo=photo,
             grades={}
         )
@@ -222,8 +232,17 @@ class StudentManager(DataStore):
                 return student
         return None
 
+    def get_student_by_nsin(self, nsin):
+        for student in self._students:
+            if student.get_nsin() == nsin:
+                return student
+        return None
+
+    def delete_student_by_id(self, student_id):
+        self._students = [s for s in self._students if s.get_id() != student_id]
+
+    def delete_student_by_nsin(self, nsin):
+        self._students = [s for s in self._students if s.get_nsin() != nsin]
+
     def get_all_students(self):
         return self._students
-
-    def delete_student(self, student_id):
-        self._students = [s for s in self._students if s.get_id() != student_id]

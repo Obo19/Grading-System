@@ -5,7 +5,7 @@
 
 <h2 class="mb-4">Grade Entry for {{ student.get_name() }}</h2>
 
-<form method="POST">
+<form method="POST" action="{{ url_for('grade_entry_by_id', student_id=student.get_id()) }}">
     <input type="hidden" name="student_id" value="{{ student.get_id() }}">
 
     <!-- Semester Selection -->

@@ -1,72 +1,129 @@
 {% extends "base.html" %}
-{% block title %}Registered Students{% endblock %}
-{% block content %}
 
-<!-- Header with Register Button -->
+{% block title %}Registered Students{% endblock %}
+
+{% block content %}
 <div class="d-flex justify-content-between align-items-center mb-4">
-    <h2 class="mb-0">Registered Students</h2>
-    <a href="{{ url_for('register_student') }}" class="btn btn-primary"> Register New Student</a>
+  <h2 class="mb-0">Registered Students</h2>
+  <a href="{{ url_for('register_student') }}" class="btn btn-primary">Register New Student</a>
 </div>
 
-<!-- Optional Search Form -->
-<form method="GET" class="mb-3">
-    <div class="input-group">
-        <input type="text" name="search" class="form-control" placeholder="Search student by name..." value="{{ query or '' }}">
-        <button class="btn btn-outline-secondary" type="submit">Search</button>
+<!-- Dashboard Totals -->
+{% set ns = namespace(cn_total=0, cm_total=0, total_students=0, male_total=0, female_total=0) %}
+{% for program, years in grouped_students.items() %}
+  {% for year, students in years.items() %}
+    {% set count = students|length %}
+    {% set ns.total_students = ns.total_students + count %}
+
+    {% set male_count = 0 %}
+    {% set female_count = 0 %}
+    {% for s in students %}
+      {% if s.get_gender() == 'Male' %}
+        {% set male_count = male_count + 1 %}
+      {% elif s.get_gender() == 'Female' %}
+        {% set female_count = female_count + 1 %}
+      {% endif %}
+    {% endfor %}
+
+    {% set ns.male_total = ns.male_total + male_count %}
+    {% set ns.female_total = ns.female_total + female_count %}
+
+    {% if program == 'CN' %}
+      {% set ns.cn_total = ns.cn_total + count %}
+    {% elif program == 'CM' %}
+      {% set ns.cm_total = ns.cm_total + count %}
+    {% endif %}
+  {% endfor %}
+{% endfor %}
+
+<!-- Dashboard Cards -->
+<div class="row mb-4">
+  <div class="col-md-3"><div class="card border-primary shadow-sm"><div class="card-body"><h5 class="card-title text-primary">CN Students</h5><p class="h4">{{ ns.cn_total }}</p></div></div></div>
+  <div class="col-md-3"><div class="card border-success shadow-sm"><div class="card-body"><h5 class="card-title text-success">CM Students</h5><p class="h4">{{ ns.cm_total }}</p></div></div></div>
+  <div class="col-md-3"><div class="card border-dark shadow-sm"><div class="card-body"><h5 class="card-title">All Students</h5><p class="h4">{{ ns.total_students }}</p></div></div></div>
+  <div class="col-md-3"><div class="card border-info shadow-sm"><div class="card-body"><h5 class="card-title text-info">Male Students</h5><p class="h4">{{ ns.male_total }}</p></div></div></div>
+  <div class="col-md-3"><div class="card border-warning shadow-sm"><div class="card-body"><h5 class="card-title text-warning">Female Students</h5><p class="h4">{{ ns.female_total }}</p></div></div></div>
+</div>
+
+<!-- Search -->
+<input type="text" id="searchInput" class="form-control mb-4" placeholder="🔍 Search student by name, NSIN, or UNMEB No">
+
+<!-- Grouped Accordion View -->
+{% for program, years in grouped_students.items() %}
+  <div class="mb-4">
+    <h4 class="text-primary">Program: {{ program }}</h4>
+    <div class="accordion" id="accordion{{ program }}">
+      {% for year, students in years.items() %}
+        <div class="accordion-item">
+          <h2 class="accordion-header" id="heading{{ program }}{{ year }}">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#collapse{{ program }}{{ year }}" aria-expanded="false">
+              Year of Entry: {{ year }} <span class="badge bg-secondary ms-2">{{ students|length }} students</span>
+            </button>
+          </h2>
+          <div id="collapse{{ program }}{{ year }}" class="accordion-collapse collapse"
+               data-bs-parent="#accordion{{ program }}">
+            <div class="accordion-body">
+              <div class="d-flex justify-content-end">
+                <button class="btn btn-outline-success btn-sm mb-2"
+                        onclick="downloadTableToExcel('table_{{ program }}_{{ year }}')">⬇️ Export to Excel</button>
+              </div>
+              <table class="table table-bordered table-striped student-table" id="table_{{ program }}_{{ year }}">
+                <thead class="table-light">
+                  <tr>
+                    <th>Name</th>
+                    <th>NSIN</th>
+                    <th>UNMEB No</th>
+                    <th>Program</th>
+                    <th>Gender</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for student in students %}
+                  <tr>
+                    <td>{{ student.get_name() }}</td>
+                    <td>{{ student.get_nsin() }}</td>
+                    <td>{{ student.get_unmeb_no() }}</td>
+                    <td>{{ student.get_program() }}</td>
+                    <td>{{ student.get_gender() }}</td>
+                    <td class="text-nowrap">
+                      {% set first_sem = student.get_semesters()[-1] if student.get_semesters() else 'Semester 1' %}
+                      <div class="dropdown">
+                        <button class="btn btn-sm btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                          Actions
+                        </button>
+                        <ul class="dropdown-menu">
+                          <li><a class="dropdown-item" href="{{ url_for('grade_entry_by_id', student_id=student.get_id()) }}?semester={{ first_sem }}">Marks</a></li>
+                          <li><a class="dropdown-item" href="{{ url_for('view_testimonial_by_id', student_id=student.get_id()) }}" target="_blank">Testimonial</a></li>
+                          <li><a class="dropdown-item" href="{{ url_for('view_transcript_by_id', student_id=student.get_id()) }}" target="_blank">Transcript</a></li>
+                          <li><a class="dropdown-item" href="{{ url_for('edit_student_by_id', student_id=student.get_id()) }}">Edit</a></li>
+                          <li><hr class="dropdown-divider"></li>
+                          <li><button class="dropdown-item text-danger" data-bs-toggle="modal"
+                              data-bs-target="#confirmDeleteModal"
+                              data-id="{{ student.get_id() }}"
+                              data-name="{{ student.get_name() }}">Delete</button></li>
+                        </ul>
+                      </div>
+                    </td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+              <div class="d-flex justify-content-center align-items-center gap-2">
+                <button class="btn btn-sm btn-outline-primary" onclick="paginate('{{ program }}_{{ year }}', -1)">⬅️ Prev</button>
+                <span id="pageInfo_{{ program }}_{{ year }}" class="small text-muted"></span>
+                <button class="btn btn-sm btn-outline-primary" onclick="paginate('{{ program }}_{{ year }}', 1)">Next ➡️</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
     </div>
-</form>
+  </div>
+{% endfor %}
 
-<!-- Student Table -->
-<table class="table table-bordered table-striped">
-    <thead class="table-light">
-        <tr>
-            <th>Name</th>
-            <th>NSIN</th>
-            <th>UNMEB No</th>
-            <th>Program</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for student in students %}
-        <tr>
-            <td>{{ student.get_name() }}</td>
-            <td>{{ student.get_nsin() }}</td>
-            <td>{{ student.get_unmeb_no() }}</td>
-            <td>{{ student.get_program() }}</td>
-            <td class="text-nowrap">
-                <!-- Enter Marks with semester filtering -->
-                {% set first_sem = student.get_semesters()[-1] if student.get_semesters() else 'Semester 1' %}
-                <a href="{{ url_for('grade_entry', student_id=student.get_id()) }}?semester={{ first_sem }}" class="btn btn-sm btn-success">📘 Enter Marks</a>
-
-                <!-- View Testimonial -->
-                <a href="{{ url_for('view_testimonial', student_id=student.get_id()) }}" target="_blank" class="btn btn-sm btn-info">📄 Testimonial</a>
-
-                <!-- View Transcript -->
-                <a href="{{ url_for('view_transcript', student_id=student.get_id()) }}" target="_blank" class="btn btn-sm btn-secondary">📑 Transcript</a>
-
-                <!-- Edit -->
-                <a href="{{ url_for('edit_student', student_id=student.get_id()) }}" class="btn btn-sm btn-warning">✏️ Edit</a>
-
-                <!-- Delete -->
-                <button class="btn btn-sm btn-danger"
-                        data-bs-toggle="modal"
-                        data-bs-target="#confirmDeleteModal"
-                        data-id="{{ student.get_id() }}"
-                        data-name="{{ student.get_name() }}">
-                        Delete
-                </button>
-            </td>
-        </tr>
-        {% else %}
-        <tr>
-            <td colspan="5" class="text-center text-muted">No students registered yet.</td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
-
-<!-- Delete Confirmation Modal -->
+<!-- Delete Modal -->
 <div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
@@ -74,9 +131,7 @@
         <h5 class="modal-title" id="confirmDeleteLabel">Confirm Delete</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
-      <div class="modal-body">
-        Are you sure you want to delete <strong id="studentName"></strong>?
-      </div>
+      <div class="modal-body">Are you sure you want to delete <strong id="studentName"></strong>?</div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
         <a id="confirmDeleteBtn" class="btn btn-danger">Yes, Delete</a>
@@ -85,17 +140,66 @@
   </div>
 </div>
 
-<!-- JS for modal logic -->
+<!-- JavaScript -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.5/xlsx.full.min.js"></script>
 <script>
-  const deleteModal = document.getElementById('confirmDeleteModal');
-  deleteModal.addEventListener('show.bs.modal', function (event) {
-    const button = event.relatedTarget;
-    const studentId = button.getAttribute('data-id');
-    const studentName = button.getAttribute('data-name');
+function downloadTableToExcel(tableId) {
+  const table = document.getElementById(tableId);
+  const wb = XLSX.utils.table_to_book(table, { sheet: "Students" });
+  XLSX.writeFile(wb, tableId + ".xlsx");
+}
 
-    document.getElementById('studentName').textContent = studentName;
-    document.getElementById('confirmDeleteBtn').href = "/delete_student/" + studentId;
+document.getElementById("searchInput").addEventListener("input", function () {
+  const query = this.value.toLowerCase();
+  const isSearching = query.length > 0;
+
+  document.querySelectorAll(".student-table").forEach(table => {
+    const rows = table.querySelectorAll("tbody tr");
+    rows.forEach(row => {
+      row.style.display = row.innerText.toLowerCase().includes(query) ? "" : "none";
+    });
+
+    const buttons = table.closest(".accordion-body").querySelector(".d-flex");
+    if (buttons) buttons.style.display = isSearching ? "none" : "flex";
   });
-</script>
+});
 
+const deleteModal = document.getElementById('confirmDeleteModal');
+deleteModal.addEventListener('show.bs.modal', function (event) {
+  const button = event.relatedTarget;
+  const studentId = button.getAttribute('data-id');
+  const studentName = button.getAttribute('data-name');
+  document.getElementById('studentName').textContent = studentName;
+  document.getElementById('confirmDeleteBtn').href = "/delete_student_by_id/" + studentId;
+});
+
+let pageTrackers = {};
+
+function paginate(group, direction) {
+  const table = document.getElementById("table_" + group);
+  const rows = table.querySelectorAll("tbody tr");
+  const perPage = 10;
+  const totalPages = Math.ceil(rows.length / perPage);
+
+  if (!(group in pageTrackers)) pageTrackers[group] = 0;
+  pageTrackers[group] += direction;
+
+  if (pageTrackers[group] < 0) pageTrackers[group] = 0;
+  if (pageTrackers[group] >= totalPages) pageTrackers[group] = totalPages - 1;
+
+  rows.forEach((row, index) => {
+    row.style.display = (index >= pageTrackers[group] * perPage && index < (pageTrackers[group] + 1) * perPage) ? '' : 'none';
+  });
+
+  const pageInfo = document.getElementById("pageInfo_" + group);
+  if (pageInfo) pageInfo.textContent = `Page ${pageTrackers[group] + 1} of ${totalPages}`;
+}
+
+window.addEventListener("DOMContentLoaded", () => {
+  document.querySelectorAll(".student-table").forEach(table => {
+    const id = table.id.replace("table_", "");
+    paginate(id, 0);
+  });
+});
+</script>
 {% endblock %}

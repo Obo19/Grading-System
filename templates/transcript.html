@@ -15,14 +15,14 @@
 </style>
 
 <div class="container mt-4">
+
+{% if all_filled %}
+
     <!-- Header Section -->
     <div class="row align-items-start mb-4">
-        <!-- School Logo -->
         <div class="col-2 text-start">
             <img src="{{ url_for('static', filename='uploads/School logo.jpg') }}" alt="School Logo" width="100">
         </div>
-
-        <!-- Title Centered -->
         <div class="col-8 text-center">
             <h4 class="mb-1">NGORA HOSPITAL SCHOOL OF NURSING AND MIDWIFERY</h4>
             <small>
@@ -32,8 +32,6 @@
             </small>
             <h4 class="mt-2">ACADEMIC TRANSCRIPT</h4>
         </div>
-
-        <!-- Student Photo -->
         <div class="col-2 text-end">
             {% if student.get_photo() %}
             <img src="{{ url_for('static', filename='uploads/' ~ student.get_photo()) }}" alt="Student Photo" width="100">
@@ -98,8 +96,6 @@
     <h5 class="text-end">Cumulative GPA (CGPA): {{ student.calculate_cgpa() }}</h5>
     <p class="mt-4"><strong>Issued on:</strong> {{ current_date }}</p>
     <p>This transcript is issued upon request of the student for official use.</p>
-
-    <!-- Footnote -->
     <p class="mt-2"><em><strong>Note:</strong> RT = Retake mark after initial failure.</em></p>
 
     <!-- Signature -->
@@ -116,6 +112,16 @@
             title="Export to PDF">
         🖨️
     </button>
-</div>
 
+{% else %}
+    <!-- Show warning when transcript is incomplete -->
+    <div class="alert alert-warning mt-5 text-center">
+        <h4 class="text-danger">Transcript Not Available</h4>
+        <p>This transcript cannot be generated because some semester results are missing.</p>
+        <p>Please complete all required semester entries to enable transcript generation.</p>
+        <a href="{{ url_for('grade_entry_by_id', student_id=student.get_id()) }}" class="btn btn-primary mt-3">Enter Grades</a>
+    </div>
+{% endif %}
+
+</div>
 {% endblock %}

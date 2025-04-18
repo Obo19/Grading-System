@@ -1,67 +1,95 @@
 {% extends "base.html" %}
-{% block title %}{{ 'Edit Student' if is_edit else 'Register Student' }}{% endblock %}
-{% block content %}
 
-<h2 class="mb-4">{{ ' Edit Student' if is_edit else 'Register New Student' }}</h2>
+{% block title %}{{ 'Edit Student' if is_edit else 'Register Student' }}{% endblock %}
+
+{% block content %}
+<h2 class="mb-4">{{ 'Edit Student' if is_edit else 'Register New Student' }}</h2>
 
 <form method="POST" enctype="multipart/form-data"
-        action="{{ url_for('edit_student', student_id=student.get_id()) if is_edit else url_for('register_student') }}">
+      action="{{ url_for('edit_student_by_id', student_id=student.get_id()) if is_edit else url_for('register_student') }}">
 
-    <div class="row mb-3">
-        <div class="col">
-            <input name="name" class="form-control" placeholder="Full Name" required
-                    value="{{ student.get_name() if is_edit else '' }}">
-        </div>
-        <div class="col">
-            <input name="nsin" class="form-control" placeholder="NSIN" required
-                    value="{{ student.get_nsin() if is_edit else '' }}">
-        </div>
+  <!-- Full Name and NSIN -->
+  <div class="row mb-3">
+    <div class="col">
+      <label for="name" class="form-label">Full Name</label>
+      <input name="name" id="name" class="form-control" placeholder="Full Name" required
+             value="{{ student.get_name() if is_edit else request.form.get('name', '') }}">
     </div>
-
-    <div class="row mb-3">
-        <div class="col">
-            <input name="unmeb_no" class="form-control" placeholder="UNMEB Number" required
-                    value="{{ student.get_unmeb_no() if is_edit else '' }}">
-        </div>
-        <div class="col">
-            <input name="nationality" class="form-control" placeholder="Nationality" required
-                    value="{{ student.get_nationality() if is_edit else '' }}">
-        </div>
+    <div class="col">
+      <label for="nsin" class="form-label">NSIN</label>
+      <input name="nsin" id="nsin" class="form-control" placeholder="NSIN" required
+             value="{{ student.get_nsin() if is_edit else request.form.get('nsin', '') }}">
     </div>
+  </div>
 
-    <div class="row mb-3">
-        <div class="col">
-            <input name="program" class="form-control" placeholder="Program" required
-                    value="{{ student.get_program() if is_edit else '' }}">
-        </div>
-        <div class="col">
-            <input name="dob" type="date" class="form-control" required
-                    value="{{ student.get_dob() if is_edit else '' }}">
-        </div>
+  <!-- UNMEB No and Nationality -->
+  <div class="row mb-3">
+    <div class="col">
+      <label for="unmeb_no" class="form-label">UNMEB Number</label>
+      <input name="unmeb_no" id="unmeb_no" class="form-control" placeholder="UNMEB Number" required
+             value="{{ student.get_unmeb_no() if is_edit else request.form.get('unmeb_no', '') }}">
     </div>
-
-    <div class="row mb-3">
-        <div class="col">
-            <input name="entry_year" class="form-control" placeholder="Entry Year" required
-                    value="{{ student.get_entry_year() if is_edit else '' }}">
-        </div>
-        <div class="col">
-            <input name="completion_year" class="form-control" placeholder="Completion Year" required
-                    value="{{ student.get_completion_year() if is_edit else '' }}">
-        </div>
+    <div class="col">
+      <label for="nationality" class="form-label">Nationality</label>
+      <input name="nationality" id="nationality" class="form-control" placeholder="Nationality" required
+             value="{{ student.get_nationality() if is_edit else request.form.get('nationality', '') }}">
     </div>
+  </div>
 
-    <div class="mb-3">
-        <label class="form-label">Photo:</label>
-        <input type="file" name="photo" class="form-control">
-        {% if is_edit and student.get_photo() %}
-        <small class="text-muted d-block mt-1">Current: {{ student.get_photo() }}</small>
-        <img src="{{ url_for('static', filename='uploads/' ~ student.get_photo()) }}" alt="Current Photo" width="100" class="mt-2">
-        {% endif %}
+  <!-- Program and DOB -->
+  <div class="row mb-3">
+    <div class="col">
+      <label for="program" class="form-label">Program</label>
+      <input name="program" id="program" class="form-control" placeholder="Program" required
+             value="{{ student.get_program() if is_edit else request.form.get('program', '') }}">
     </div>
+    <div class="col">
+      <label for="dob" class="form-label">Date of Birth</label>
+      <input name="dob" id="dob" type="date" class="form-control" required
+             value="{{ student.get_dob() if is_edit else request.form.get('dob', '') }}">
+    </div>
+  </div>
 
-    <button type="submit" class="btn btn-success">{{ 'Update Student' if is_edit else 'Register Student' }}</button>
-    <a href="{{ url_for('home') }}" class="btn btn-secondary ms-2">Cancel</a>
+  <!-- Entry Year and Completion Year -->
+  <div class="row mb-3">
+    <div class="col">
+      <label for="entry_year" class="form-label">Entry Year</label>
+      <input name="entry_year" id="entry_year" class="form-control" placeholder="Entry Year" required type="number"
+             value="{{ student.get_entry_year() if is_edit else request.form.get('entry_year', '') }}">
+    </div>
+    <div class="col">
+      <label for="completion_year" class="form-label">Completion Year</label>
+      <input name="completion_year" id="completion_year" class="form-control" placeholder="Completion Year" required type="number"
+             value="{{ student.get_completion_year() if is_edit else request.form.get('completion_year', '') }}">
+    </div>
+  </div>
+
+  <!-- Gender Field -->
+  <div class="mb-3">
+    <label for="gender" class="form-label">Gender:</label>
+    <select name="gender" id="gender" class="form-select" required>
+      <option value="" disabled {% if not is_edit and not request.form.get('gender') %}selected{% endif %}>-- Select Gender --</option>
+      <option value="Male"
+        {% if (is_edit and student.get_gender() == 'Male') or request.form.get('gender') == 'Male' %}selected{% endif %}>Male</option>
+      <option value="Female"
+        {% if (is_edit and student.get_gender() == 'Female') or request.form.get('gender') == 'Female' %}selected{% endif %}>Female</option>
+      <option value="Other"
+        {% if (is_edit and student.get_gender() == 'Other') or request.form.get('gender') == 'Other' %}selected{% endif %}>Other</option>
+    </select>
+  </div>
+
+  <!-- Photo Upload Field -->
+  <div class="mb-3">
+    <label class="form-label">Photo:</label>
+    <input type="file" name="photo" accept="image/*" class="form-control">
+    {% if is_edit and student.get_photo() %}
+      <small class="text-muted d-block mt-1">Current: {{ student.get_photo() }}</small>
+      <img src="{{ url_for('static', filename='uploads/' ~ student.get_photo()) }}" alt="Current Photo" width="100" class="mt-2">
+    {% endif %}
+  </div>
+
+  <!-- Submit Button -->
+  <button type="submit" class="btn btn-success">{{ 'Update Student' if is_edit else 'Register Student' }}</button>
+  <a href="{{ url_for('home') }}" class="btn btn-secondary ms-2">Cancel</a>
 </form>
-
 {% endblock %}
