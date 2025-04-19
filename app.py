@@ -5,6 +5,7 @@ import uuid
 import json
 from werkzeug.utils import secure_filename
 from datetime import datetime
+from collections import defaultdict
 
 # -----------------------------
 # Initialize Flask App
@@ -13,7 +14,7 @@ app = Flask(__name__)
 app.secret_key = "your_secret_key_here"
 
 # -----------------------------
-# Set Upload Directory
+# File Upload Configuration
 # -----------------------------
 UPLOAD_FOLDER = os.path.join("static", "uploads")
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
@@ -27,7 +28,7 @@ student_manager = StudentManager()
 student_manager.load_from_json()
 
 # -----------------------------
-# Load Grading Scale & Course Structure
+# Load Grading Scale and Courses
 # -----------------------------
 with open(os.path.join("data", "grading_scale.json")) as f:
     grading_scale = json.load(f)
@@ -36,34 +37,100 @@ with open(os.path.join("data", "extracted_courses.json")) as f:
     program_courses = json.load(f)
 
 # -----------------------------
-# File Type Checker
+# Allowed File Types
 # -----------------------------
 def allowed_file(filename):
     allowed_extensions = {'png', 'jpg', 'jpeg', 'gif'}
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in allowed_extensions
 
 # -----------------------------
-# Home Page
+# Home Dashboard
 # -----------------------------
 @app.route('/')
 def home():
     students = student_manager.get_all_students()
-    grouped_students = {}
+    semester_filter = request.args.get('semester')
+    program_filter = request.args.get('program')
+
+    ns = {
+        "cn_total": 0,
+        "cm_total": 0,
+        "total_students": 0,
+        "male_total": 0,
+        "female_total": 0
+    }
+
+    course_marks = defaultdict(list)
+    course_outcomes = defaultdict(lambda: {'pass': 0, 'fail': 0})
+    all_semesters = set()
+    all_programs = set()
 
     for student in students:
         program = student.get_program().strip().upper()
-        entry_year = student.get_entry_year().strip()
-        grouped_students.setdefault(program, {}).setdefault(entry_year, []).append(student)
+        all_programs.add(program)
 
-    return render_template("students.html", grouped_students=grouped_students)
+        if program == 'CN':
+            ns["cn_total"] += 1
+        elif program == 'CM':
+            ns["cm_total"] += 1
+        ns["total_students"] += 1
+
+        gender = student.get_gender()
+        if gender == 'Male':
+            ns["male_total"] += 1
+        elif gender == 'Female':
+            ns["female_total"] += 1
+
+        if program_filter and program != program_filter:
+            continue
+
+        for semester, courses in student.get_all_courses().items():
+            all_semesters.add(semester)
+
+            if semester_filter and semester != semester_filter:
+                continue
+
+            for course in courses:
+                if course.get("marks") is not None:
+                    code = course.get("code")
+                    marks = course["marks"]
+                    course_marks[code].append(marks)
+                    if marks >= 50:
+                        course_outcomes[code]['pass'] += 1
+                    else:
+                        course_outcomes[code]['fail'] += 1
+
+    avg_performance = {
+        code: round(sum(marks)/len(marks), 2)
+        for code, marks in course_marks.items()
+    }
+
+    pass_fail = {
+        code: {
+            'pass': course_outcomes[code]['pass'],
+            'fail': course_outcomes[code]['fail']
+        }
+        for code in course_marks
+    }
+
+    return render_template(
+        "home.html",
+        ns=ns,
+        performance=avg_performance,
+        outcomes=pass_fail,
+        semesters=sorted(all_semesters),
+        programs=sorted(all_programs),
+        selected_semester=semester_filter,
+        selected_program=program_filter
+    )
+
 
 # -----------------------------
-# Register New Student
+# Student Registration
 # -----------------------------
 @app.route('/register', methods=['GET', 'POST'])
 def register_student():
     if request.method == 'POST':
-        student_id = str(uuid.uuid4())
         name = request.form['name']
         nsin = request.form['nsin']
         unmeb_no = request.form['unmeb_no']
@@ -74,6 +141,10 @@ def register_student():
         completion_year = request.form['completion_year']
         gender = request.form.get('gender')
 
+        if student_manager.get_student_by_nsin(nsin):
+            flash(f"Student with NSIN {nsin} already exists.", "danger")
+            return redirect(url_for('register_student'))
+
         photo = request.files['photo']
         photo_filename = None
         if photo and allowed_file(photo.filename):
@@ -81,16 +152,19 @@ def register_student():
             photo_filename = f"{uuid.uuid4()}_{filename}"
             photo.save(os.path.join(UPLOAD_FOLDER, photo_filename))
 
-        student_manager.add_student(name, student_id, nsin, unmeb_no, nationality, program,
-                                    dob, entry_year, completion_year, gender, photo_filename)
+        student_id = str(uuid.uuid4())
+        student_manager.add_student(
+            name, student_id, nsin, unmeb_no, nationality, program,
+            dob, entry_year, completion_year, gender, photo_filename
+        )
         student_manager.save_to_json()
-        flash("Student registered successfully!")
+        flash("Student registered successfully!", "success")
         return redirect(url_for('home'))
 
     return render_template("register.html", is_edit=False)
 
 # -----------------------------
-# Edit Student by ID
+# Edit Student
 # -----------------------------
 @app.route('/edit_student_by_id/<student_id>', methods=['GET', 'POST'])
 def edit_student_by_id(student_id):
@@ -124,7 +198,7 @@ def edit_student_by_id(student_id):
     return render_template("register.html", student=student, is_edit=True)
 
 # -----------------------------
-# Delete Student by ID
+# Delete Student
 # -----------------------------
 @app.route('/delete_student_by_id/<student_id>')
 def delete_student_by_id(student_id):
@@ -144,7 +218,7 @@ def delete_student_by_id(student_id):
     return redirect(url_for('home'))
 
 # -----------------------------
-# Grade Entry by ID
+# Grade Entry
 # -----------------------------
 @app.route('/grades_by_id/<student_id>', methods=['GET', 'POST'])
 def grade_entry_by_id(student_id):
@@ -188,10 +262,10 @@ def grade_entry_by_id(student_id):
         flash("Grades saved successfully!")
         return redirect(url_for('home'))
 
-    return render_template("grade_entry.html", student=student, courses=courses,existing=existing, selected_semester=selected_semester,available_semesters=available_semesters, grading_scale=grading_scale)
+    return render_template("grade_entry.html", student=student, courses=courses, existing=existing,selected_semester=selected_semester, available_semesters=available_semesters,grading_scale=grading_scale)
 
 # -----------------------------
-# Testimonial by ID
+# View Testimonial
 # -----------------------------
 @app.route('/testimonial_by_id/<student_id>')
 def view_testimonial_by_id(student_id):
@@ -204,7 +278,7 @@ def view_testimonial_by_id(student_id):
     return render_template("testimonial.html", student=student, current_date=current_date)
 
 # -----------------------------
-# Transcript by ID
+# View Transcript
 # -----------------------------
 @app.route('/transcript_by_id/<student_id>')
 def view_transcript_by_id(student_id):
@@ -227,7 +301,51 @@ def view_transcript_by_id(student_id):
     return render_template("transcript.html", student=student, current_date=current_date, all_filled=all_filled)
 
 # -----------------------------
-# Run App
+# CN Students Only
+# -----------------------------
+@app.route('/cn_students')
+def view_cn_students():
+    students = student_manager.get_all_students()
+    grouped_students = {'CN': {}}
+    ns = {"cn_total": 0, "cm_total": 0, "total_students": 0, "male_total": 0, "female_total": 0}
+
+    for student in students:
+        if student.get_program().strip().upper() == 'CN':
+            year = student.get_entry_year().strip()
+            grouped_students['CN'].setdefault(year, []).append(student)
+            ns["cn_total"] += 1
+            ns["total_students"] += 1
+            if student.get_gender() == 'Male':
+                ns["male_total"] += 1
+            elif student.get_gender() == 'Female':
+                ns["female_total"] += 1
+
+    return render_template('students.html', grouped_students=grouped_students, ns=ns, program='CN')
+
+# -----------------------------
+# CM Students Only
+# -----------------------------
+@app.route('/cm_students')
+def view_cm_students():
+    students = student_manager.get_all_students()
+    grouped_students = {'CM': {}}
+    ns = {"cn_total": 0, "cm_total": 0, "total_students": 0, "male_total": 0, "female_total": 0}
+
+    for student in students:
+        if student.get_program().strip().upper() == 'CM':
+            year = student.get_entry_year().strip()
+            grouped_students['CM'].setdefault(year, []).append(student)
+            ns["cm_total"] += 1
+            ns["total_students"] += 1
+            if student.get_gender() == 'Male':
+                ns["male_total"] += 1
+            elif student.get_gender() == 'Female':
+                ns["female_total"] += 1
+
+    return render_template('students.html', grouped_students=grouped_students, ns=ns, program='CM')
+
+# -----------------------------
+# Run Server
 # -----------------------------
 if __name__ == '__main__':
     app.run(debug=True)

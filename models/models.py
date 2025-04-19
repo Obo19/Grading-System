@@ -87,6 +87,9 @@ class Student(Person):
     def get_gender(self): return self._gender
     def get_semesters(self): return list(self.__grades.keys())
 
+    def get_all_courses(self):
+        return self.__grades
+
     def get_raw_courses_by_semester(self, semester):
         return self.__grades.get(semester, [])
 

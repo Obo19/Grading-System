@@ -1,25 +1,312 @@
 [
     {
-        "id": "test-123",
-        "name": "Jane Doe",
-        "nsin": "JAN23/CN/U001/001",
-        "unmeb_no": "U001/001",
+        "id": "fe1e826a-8041-43da-af4f-19f07042df4f",
+        "name": "AKELLO JENIFER",
+        "nsin": "JUL23/U025/CN/062",
+        "unmeb_no": "U025/002",
+        "nationality": "UGANDAN",
+        "program": "CM",
+        "dob": "2002-08-08",
+        "entry_year": "2023",
+        "completion_year": "2025",
+        "gender": "Female",
+        "photo": "a11336c6-9358-4b12-87d2-042e7033baef_IMG_1243.JPG",
+        "grades": {
+            "Year One Semester One": [
+                {
+                    "semester": "Year One Semester One",
+                    "code": "CM111",
+                    "title": "Anatomy and Physiology I and First Aid",
+                    "marks": 67,
+                    "grade": "C+",
+                    "grade_point": 3.5
+                },
+                {
+                    "semester": "Year One Semester One",
+                    "code": "CM112",
+                    "title": "Foundations of Nursing and Basic Computer",
+                    "marks": 87,
+                    "grade": "A",
+                    "grade_point": 5.0
+                },
+                {
+                    "semester": "Year One Semester One",
+                    "code": "CM113",
+                    "title": "Personal and Communal Health and Microbiology",
+                    "marks": 93,
+                    "grade": "A",
+                    "grade_point": 5.0
+                },
+                {
+                    "semester": "Year One Semester One",
+                    "code": "CM114",
+                    "title": "Practical I",
+                    "marks": 78,
+                    "grade": "B+",
+                    "grade_point": 4.5
+                }
+            ],
+            "Year One Semester Two": [
+                {
+                    "semester": "Year One Semester Two",
+                    "code": "CM121",
+                    "title": "Anatomy and Physiology II",
+                    "marks": 78,
+                    "grade": "B+",
+                    "grade_point": 4.5
+                },
+                {
+                    "semester": "Year One Semester Two",
+                    "code": "CM122",
+                    "title": "Foundations of Nursing II, Sociology and Psychology",
+                    "marks": 98,
+                    "grade": "A",
+                    "grade_point": 5.0
+                },
+                {
+                    "semester": "Year One Semester Two",
+                    "code": "CM123",
+                    "title": "Primary Health Care",
+                    "marks": 78,
+                    "grade": "B+",
+                    "grade_point": 4.5,
+                    "retake": 78,
+                    "original_marks": 45
+                },
+                {
+                    "semester": "Year One Semester Two",
+                    "code": "CM124",
+                    "title": "Practical II",
+                    "marks": 87,
+                    "grade": "A",
+                    "grade_point": 5.0
+                }
+            ],
+            "Year Two Semester One": [
+                {
+                    "semester": "Year Two Semester One",
+                    "code": "CM211",
+                    "title": "Obstetric Anatomy",
+                    "marks": 89,
+                    "grade": "A",
+                    "grade_point": 5.0
+                },
+                {
+                    "semester": "Year Two Semester One",
+                    "code": "CM212",
+                    "title": "Midwifery I and Pharmacology I",
+                    "marks": 70,
+                    "grade": "B",
+                    "grade_point": 4.0
+                },
+                {
+                    "semester": "Year Two Semester One",
+                    "code": "CM213",
+                    "title": "Paediatric Nursing I and Palliative Care Nursing",
+                    "marks": 67,
+                    "grade": "C+",
+                    "grade_point": 3.5
+                },
+                {
+                    "semester": "Year Two Semester One",
+                    "code": "CM214",
+                    "title": "Practical III",
+                    "marks": 98,
+                    "grade": "A",
+                    "grade_point": 5.0
+                }
+            ],
+            "Year Two Semester Two": [
+                {
+                    "semester": "Year Two Semester Two",
+                    "code": "CM221",
+                    "title": "Midwifery II and Tropical Medicine",
+                    "marks": 67,
+                    "grade": "C+",
+                    "grade_point": 3.5
+                },
+                {
+                    "semester": "Year Two Semester Two",
+                    "code": "CM222",
+                    "title": "Obstetric Pharmacology and Paediatric Nursing II",
+                    "marks": 90,
+                    "grade": "A",
+                    "grade_point": 5.0
+                },
+                {
+                    "semester": "Year Two Semester Two",
+                    "code": "CM223",
+                    "title": "Community Health Nursing, Occupational Health and Safety",
+                    "marks": 65,
+                    "grade": "C+",
+                    "grade_point": 3.5
+                },
+                {
+                    "semester": "Year Two Semester Two",
+                    "code": "CM224",
+                    "title": "Practical IV",
+                    "marks": 80,
+                    "grade": "A",
+                    "grade_point": 5.0
+                }
+            ],
+            "Year Three Semester One": [
+                {
+                    "semester": "Year Three Semester One",
+                    "code": "CM311",
+                    "title": "Gynaecology and Reproductive Health",
+                    "marks": 90,
+                    "grade": "A",
+                    "grade_point": 5.0
+                },
+                {
+                    "semester": "Year Three Semester One",
+                    "code": "CM312",
+                    "title": "Mental Health Nursing, Guidance and Counselling",
+                    "marks": 86,
+                    "grade": "A",
+                    "grade_point": 5.0
+                },
+                {
+                    "semester": "Year Three Semester One",
+                    "code": "CM313",
+                    "title": "Health Service Management and Entrepreneurship",
+                    "marks": 79,
+                    "grade": "B+",
+                    "grade_point": 4.5
+                },
+                {
+                    "semester": "Year Three Semester One",
+                    "code": "CM314",
+                    "title": "Practical V",
+                    "marks": 67,
+                    "grade": "C+",
+                    "grade_point": 3.5
+                }
+            ]
+        }
+    },
+    {
+        "id": "1e344ac1-bb45-4978-97c0-7dd797b3e4bf",
+        "name": "Okello Peter",
+        "nsin": "JUL23/U025/CN/067",
+        "unmeb_no": "U025/001",
         "nationality": "UGANDAN",
         "program": "CN",
-        "dob": "2000-01-01",
-        "entry_year": "2020",
-        "completion_year": "2023",
-        "gender": "Female",
-        "photo": null,
+        "dob": "2000-09-09",
+        "entry_year": "2021",
+        "completion_year": "2025",
+        "gender": "Male",
+        "photo": "9f78031a-7ca9-4cfd-98b0-e8a71137d751_IMG_1243.JPG",
         "grades": {
             "Year One Semester One": [
                 {
                     "semester": "Year One Semester One",
                     "code": "CN 111",
                     "title": "Anatomy and Physiology I and First Aid",
-                    "marks": 76,
-                    "grade": "B+",
-                    "grade_point": 4.5
+                    "marks": 67,
+                    "grade": "C+",
+                    "grade_point": 3.5
+                },
+                {
+                    "semester": "Year One Semester One",
+                    "code": "CN 112",
+                    "title": "Foundations of Nursing and Basic Computer",
+                    "marks": 89,
+                    "grade": "A",
+                    "grade_point": 5.0
+                },
+                {
+                    "semester": "Year One Semester One",
+                    "code": "CN 113",
+                    "title": "Personal and Communal Health and Microbiology",
+                    "marks": 87,
+                    "grade": "A",
+                    "grade_point": 5.0,
+                    "retake": 87,
+                    "original_marks": 45
+                },
+                {
+                    "semester": "Year One Semester One",
+                    "code": "CN 114",
+                    "title": "Practical I",
+                    "marks": 60,
+                    "grade": "C",
+                    "grade_point": 3.0
+                }
+            ]
+        }
+    },
+    {
+        "id": "b0432c1d-2caa-49f7-8169-ed1c1bf39850",
+        "name": "AKELLO JOAN",
+        "nsin": "JUL23/CM/U025/001",
+        "unmeb_no": "U025/001",
+        "nationality": "UGANDAN",
+        "program": "CM",
+        "dob": "2000-08-08",
+        "entry_year": "2021",
+        "completion_year": "2023",
+        "gender": "Female",
+        "photo": "ef55a3fc-155b-4894-a743-5aa5472ca76a_IMG_1242.JPG",
+        "grades": {
+            "Year One Semester One": [
+                {
+                    "semester": "Year One Semester One",
+                    "code": "CM111",
+                    "title": "Anatomy and Physiology I and First Aid",
+                    "marks": 67,
+                    "grade": "C+",
+                    "grade_point": 3.5
+                },
+                {
+                    "semester": "Year One Semester One",
+                    "code": "CM112",
+                    "title": "Foundations of Nursing and Basic Computer",
+                    "marks": 98,
+                    "grade": "A",
+                    "grade_point": 5.0
+                },
+                {
+                    "semester": "Year One Semester One",
+                    "code": "CM113",
+                    "title": "Personal and Communal Health and Microbiology",
+                    "marks": 87,
+                    "grade": "A",
+                    "grade_point": 5.0
+                },
+                {
+                    "semester": "Year One Semester One",
+                    "code": "CM114",
+                    "title": "Practical I",
+                    "marks": 56,
+                    "grade": "D+",
+                    "grade_point": 2.5
+                }
+            ]
+        }
+    },
+    {
+        "id": "fd9ba764-f691-46a9-a78e-4e5deb5df593",
+        "name": "OBOIRE EDISON",
+        "nsin": "JAN23/CN/U025/001",
+        "unmeb_no": "U025/001",
+        "nationality": "UGANDAN",
+        "program": "CN",
+        "dob": "2000-08-08",
+        "entry_year": "2021",
+        "completion_year": "2023",
+        "gender": "Male",
+        "photo": "a7393083-735c-4b91-8b73-8c202aca51b2_IMG_1247.JPG",
+        "grades": {
+            "Year One Semester One": [
+                {
+                    "semester": "Year One Semester One",
+                    "code": "CN 111",
+                    "title": "Anatomy and Physiology I and First Aid",
+                    "marks": 45,
+                    "grade": "F",
+                    "grade_point": 0.0
                 },
                 {
                     "semester": "Year One Semester One",
@@ -33,9 +320,9 @@
                     "semester": "Year One Semester One",
                     "code": "CN 113",
                     "title": "Personal and Communal Health and Microbiology",
-                    "marks": 45,
-                    "grade": "F",
-                    "grade_point": 0.0
+                    "marks": 89,
+                    "grade": "A",
+                    "grade_point": 5.0
                 },
                 {
                     "semester": "Year One Semester One",
@@ -44,6 +331,55 @@
                     "marks": 67,
                     "grade": "C+",
                     "grade_point": 3.5
+                }
+            ]
+        }
+    },
+    {
+        "id": "d94b0839-d0fb-4ff5-9d69-562ba21b53d4",
+        "name": "AGUTI JANET",
+        "nsin": "JAN23/CN/U025/002",
+        "unmeb_no": "U025/001",
+        "nationality": "UGANDAN",
+        "program": "CN",
+        "dob": "2000-08-08",
+        "entry_year": "2000-01",
+        "completion_year": "2024-06",
+        "gender": "Male",
+        "photo": "43ca4e7b-df10-4256-9cd1-b1ae14e63594_IMG_1247.JPG",
+        "grades": {
+            "Year One Semester One": [
+                {
+                    "semester": "Year One Semester One",
+                    "code": "CN 111",
+                    "title": "Anatomy and Physiology I and First Aid",
+                    "marks": 67,
+                    "grade": "C+",
+                    "grade_point": 3.5
+                },
+                {
+                    "semester": "Year One Semester One",
+                    "code": "CN 112",
+                    "title": "Foundations of Nursing and Basic Computer",
+                    "marks": 89,
+                    "grade": "A",
+                    "grade_point": 5.0
+                },
+                {
+                    "semester": "Year One Semester One",
+                    "code": "CN 113",
+                    "title": "Personal and Communal Health and Microbiology",
+                    "marks": 67,
+                    "grade": "C+",
+                    "grade_point": 3.5
+                },
+                {
+                    "semester": "Year One Semester One",
+                    "code": "CN 114",
+                    "title": "Practical I",
+                    "marks": 78,
+                    "grade": "B+",
+                    "grade_point": 4.5
                 }
             ]
         }

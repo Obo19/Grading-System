@@ -50,21 +50,21 @@
     </div>
   </div>
 
-  <!-- Entry Year and Completion Year -->
+  <!-- Entry Year and Completion Year (with Month Picker) -->
   <div class="row mb-3">
     <div class="col">
-      <label for="entry_year" class="form-label">Entry Year</label>
-      <input name="entry_year" id="entry_year" class="form-control" placeholder="Entry Year" required type="number"
+      <label for="entry_year" class="form-label">Year and Month of Entry</label>
+      <input name="entry_year" id="entry_year" class="form-control" type="month" required
              value="{{ student.get_entry_year() if is_edit else request.form.get('entry_year', '') }}">
     </div>
     <div class="col">
-      <label for="completion_year" class="form-label">Completion Year</label>
-      <input name="completion_year" id="completion_year" class="form-control" placeholder="Completion Year" required type="number"
+      <label for="completion_year" class="form-label">Year and Month of Completion</label>
+      <input name="completion_year" id="completion_year" class="form-control" type="month" required
              value="{{ student.get_completion_year() if is_edit else request.form.get('completion_year', '') }}">
     </div>
   </div>
 
-  <!-- Gender Field -->
+  <!-- Gender -->
   <div class="mb-3">
     <label for="gender" class="form-label">Gender:</label>
     <select name="gender" id="gender" class="form-select" required>
@@ -78,7 +78,7 @@
     </select>
   </div>
 
-  <!-- Photo Upload Field -->
+  <!-- Photo Upload -->
   <div class="mb-3">
     <label class="form-label">Photo:</label>
     <input type="file" name="photo" accept="image/*" class="form-control">
@@ -88,7 +88,7 @@
     {% endif %}
   </div>
 
-  <!-- Submit Button -->
+  <!-- Submit -->
   <button type="submit" class="btn btn-success">{{ 'Update Student' if is_edit else 'Register Student' }}</button>
   <a href="{{ url_for('home') }}" class="btn btn-secondary ms-2">Cancel</a>
 </form>

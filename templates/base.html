@@ -1,49 +1,78 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Academic System{% endblock %}</title>
-    
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{% block title %}Academic System{% endblock %}</title>
 
-    <!-- Optional custom styling -->
-    <style>
-        body {
-            background-color: #f8f9fa;
-        }
-        .container {
-            padding-top: 30px;
-            padding-bottom: 30px;
-        }
-        @media print {
-            .d-print-none {
-                display: none !important;
-            }
-        }
-    </style>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+
+  <style>
+    body {
+      background-color: #f8f9fa;
+    }
+    .container {
+      padding-top: 30px;
+      padding-bottom: 30px;
+    }
+    @media print {
+      .d-print-none {
+        display: none !important;
+      }
+    }
+  </style>
 </head>
 <body>
 
-    <div class="container">
-
-        <!-- Flash messages -->
-        {% with messages = get_flashed_messages() %}
-            {% if messages %}
-            <div class="alert alert-info alert-dismissible fade show d-print-none" role="alert">
-                {{ messages[0] }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-            </div>
-            {% endif %}
-        {% endwith %}
-
-        <!-- Main content -->
-        {% block content %}{% endblock %}
+  <!--  Navigation Bar -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark d-print-none">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="{{ url_for('home') }}">Ngora School of Nursing Student Portal</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item">
+            <a class="nav-link {% if request.endpoint == 'home' %}active{% endif %}" href="{{ url_for('home') }}">Home Page</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link {% if request.endpoint == 'register_student' %}active{% endif %}" href="{{ url_for('register_student') }}">Register Student</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link {% if request.endpoint == 'view_cn_students' %}active{% endif %}" href="{{ url_for('view_cn_students') }}">CN Students</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link {% if request.endpoint == 'view_cm_students' %}active{% endif %}" href="{{ url_for('view_cm_students') }}">CM Students</a>
+          </li>
+        </ul>
+      </div>
     </div>
+  </nav>
 
-    <!-- Bootstrap Bundle with Popper (required for modals, alerts, dropdowns) -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- Main Container -->
+  <div class="container">
+
+    <!-- Flash Messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="alert alert-{{ category }} alert-dismissible fade show d-print-none mt-3" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          </div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    <!-- Main Page Content -->
+    {% block content %}{% endblock %}
+
+  </div>
+
+  <!--Bootstrap JS Bundle -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
 </body>
 </html>

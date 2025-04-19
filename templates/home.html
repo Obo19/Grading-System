@@ -1,0 +1,180 @@
+{% extends "base.html" %}
+
+{% block title %}Home Page{% endblock %}
+
+{% block content %}
+<h2 class="mb-4">Student Summary Dashboard</h2>
+
+<!-- Summary Cards -->
+<div class="row mb-4">
+  <div class="col-md-3">
+    <div class="card border-primary shadow-sm text-center">
+      <div class="card-body">
+        <h6 class="text-primary">CN Students</h6>
+        <h4>{{ ns.cn_total }}</h4>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="card border-success shadow-sm text-center">
+      <div class="card-body">
+        <h6 class="text-success">CM Students</h6>
+        <h4>{{ ns.cm_total }}</h4>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="card border-dark shadow-sm text-center">
+      <div class="card-body">
+        <h6 class="text-dark">Total Students</h6>
+        <h4>{{ ns.total_students }}</h4>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="card border-info shadow-sm text-center">
+      <div class="card-body">
+        <h6 class="text-info">Male Students</h6>
+        <h4>{{ ns.male_total }}</h4>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-3 mt-3">
+    <div class="card border-warning shadow-sm text-center">
+      <div class="card-body">
+        <h6 class="text-warning">Female Students</h6>
+        <h4>{{ ns.female_total }}</h4>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Filter Options -->
+<form method="get" class="row g-3 align-items-end mb-4">
+  <div class="col-md-4">
+    <label for="semester" class="form-label">Filter by Semester</label>
+    <select name="semester" id="semester" class="form-select">
+      <option value="">All Semesters</option>
+      {% for s in semesters %}
+        <option value="{{ s }}" {% if selected_semester == s %}selected{% endif %}>{{ s }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <div class="col-md-4">
+    <label for="program" class="form-label">Filter by Program</label>
+    <select name="program" id="program" class="form-select">
+      <option value="">All Programs</option>
+      {% for p in programs %}
+        <option value="{{ p }}" {% if selected_program == p %}selected{% endif %}>{{ p }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <div class="col-md-4">
+    <button type="submit" class="btn btn-primary w-100">Apply Filters</button>
+  </div>
+</form>
+
+<!-- Performance Charts -->
+<div class="row mb-4">
+  <div class="col-md-6">
+    <h5>Average Marks per Course Unit</h5>
+    <canvas id="avgChart" height="200"></canvas>
+  </div>
+  <div class="col-md-6">
+    <h5>Pass/Fail Rate per Course Unit</h5>
+    <canvas id="pfChart" height="200"></canvas>
+  </div>
+</div>
+
+<!-- Export Button -->
+<div class="mb-4">
+  <button onclick="downloadPDF()" class="btn btn-outline-danger">Download Charts as PDF</button>
+</div>
+
+<!-- Chart.js & jsPDF CDN -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+
+<script>
+  const avgLabels = {{ performance.keys()|list|tojson }};
+  const avgData = {{ performance.values()|list|tojson }};
+
+  const passFail = {{ outcomes|tojson }};
+  const pfLabels = Object.keys(passFail);
+  const passData = pfLabels.map(code => passFail[code]['pass']);
+  const failData = pfLabels.map(code => passFail[code]['fail']);
+
+  // Avg Marks Chart
+  new Chart(document.getElementById('avgChart'), {
+    type: 'bar',
+    data: {
+      labels: avgLabels,
+      datasets: [{
+        label: 'Average Marks',
+        data: avgData,
+        backgroundColor: 'rgba(54, 162, 235, 0.6)'
+      }]
+    },
+    options: {
+      responsive: true,
+      scales: {
+        y: {
+          beginAtZero: true,
+          max: 100,
+          title: {
+            display: true,
+            text: 'Marks (%)'
+          }
+        }
+      }
+    }
+  });
+
+  // Pass/Fail Chart
+  new Chart(document.getElementById('pfChart'), {
+    type: 'bar',
+    data: {
+      labels: pfLabels,
+      datasets: [
+        {
+          label: 'Pass',
+          data: passData,
+          backgroundColor: 'rgba(75, 192, 192, 0.7)'
+        },
+        {
+          label: 'Fail',
+          data: failData,
+          backgroundColor: 'rgba(255, 99, 132, 0.7)'
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      scales: {
+        y: {
+          beginAtZero: true,
+          title: {
+            display: true,
+            text: 'Student Count'
+          }
+        }
+      }
+    }
+  });
+
+  // Export to PDF
+  function downloadPDF() {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF('landscape');
+    html2canvas(document.body).then(canvas => {
+      const imgData = canvas.toDataURL('image/png');
+      const imgProps = doc.getImageProperties(imgData);
+      const pdfWidth = doc.internal.pageSize.getWidth();
+      const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+      doc.addImage(imgData, 'PNG', 0, 10, pdfWidth, pdfHeight);
+      doc.save('student_dashboard.pdf');
+    });
+  }
+</script>
+{% endblock %}
