@@ -4,12 +4,28 @@
 {% block content %}
 
 <style>
+/* Repeating faint background with text */
+body {
+    background-image: 
+        url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='400' height='200'><text x='0' y='100' fill='rgba(0,0,0,0.04)' font-size='28'>NGORAHSNH NGORAHSNH NGORAHSNH</text></svg>");
+    background-repeat: repeat;
+    background-size: 400px 200px;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+}
+
 @media print {
     .d-print-none, .btn, button {
         display: none !important;
     }
+
     body {
-        background-color: white !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+        background-image: 
+            url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='400' height='200'><text x='0' y='100' fill='rgba(0,0,0,0.04)' font-size='28'>NGORAHSNH NGORAHSNH NGORAHSNH</text></svg>");
+        background-repeat: repeat;
+        background-size: 400px 200px;
     }
 }
 </style>
@@ -39,7 +55,7 @@
         </div>
     </div>
 
-    <!-- Student Information -->
+    <!-- Student Info -->
     <div class="row mb-3">
         <div class="col-md-3"><strong>Name:</strong> {{ student.get_name() }}</div>
         <div class="col-md-3"><strong>Nationality:</strong> {{ student.get_nationality() }}</div>
@@ -76,8 +92,8 @@
                     <td>{{ course.code }}</td>
                     <td>{{ course.title }}</td>
                     <td>
-                        {% if course.marks is defined and course.marks < 50 and course.retake is defined %}
-                            RT {{ course.retake }}
+                        {% if course.retake is defined %}
+                            {{ course.retake }} RT
                         {% else %}
                             {{ course.marks or '---' }}
                         {% endif %}
@@ -95,14 +111,14 @@
     <hr>
     <h5 class="text-end">Cumulative GPA (CGPA): {{ student.calculate_cgpa() }}</h5>
     <p class="mt-4"><strong>Issued on:</strong> {{ current_date }}</p>
-    <p>This transcript is issued upon request of the student for official use.</p>
-    <p class="mt-2"><em><strong>Note:</strong> RT = Retake mark after initial failure.</em></p>
+    <p>NOT VALID WITHOUT ACADEMIC REGISTRARS STAMP AND SEAL</p>
+    <p class="mt-2"><em><strong>Note:</strong> “RT” RESULTS OBTAINED AFTER RETAKING A PAPER.</em></p>
 
     <!-- Signature -->
-    <div class="row mt-5">
-        <div class="col text-end" style="margin-top: 80px;">
+    <div class="row mt-0">
+        <div class="col text-end" style="margin-top: 50px;">
             <p><strong>__________________________</strong></p>
-            <p><strong>Registrar</strong><br>NGORA HOSPITAL SCHOOL OF NURSING AND MIDWIFERY</p>
+            <p><strong>Academic Registrar</strong><br>NGORA HOSPITAL SCHOOL OF NURSING AND MIDWIFERY</p>
         </div>
     </div>
 
@@ -114,11 +130,15 @@
     </button>
 
 {% else %}
-    <!-- Show warning when transcript is incomplete -->
+    <!-- If Ineligible -->
     <div class="alert alert-warning mt-5 text-center">
         <h4 class="text-danger">Transcript Not Available</h4>
-        <p>This transcript cannot be generated because some semester results are missing.</p>
-        <p>Please complete all required semester entries to enable transcript generation.</p>
+        <p>This transcript cannot be generated because:</p>
+        <ul class="list-unstyled">
+            <li>Some semester results are missing</li>
+            <li> Or some marks (including retakes) are still below the passing mark (50)</li>
+        </ul>
+        <p>Please complete all required semesters and ensure all marks meet the minimum requirement to enable transcript generation.</p>
         <a href="{{ url_for('grade_entry_by_id', student_id=student.get_id()) }}" class="btn btn-primary mt-3">Enter Grades</a>
     </div>
 {% endif %}

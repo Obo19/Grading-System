@@ -44,6 +44,30 @@ def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in allowed_extensions
 
 # -----------------------------
+# Transcript Eligibility Check
+# -----------------------------
+def is_transcript_eligible(student):
+    required_semesters = [
+        'Year One Semester One',
+        'Year One Semester Two',
+        'Year Two Semester One',
+        'Year Two Semester Two',
+        'Year Three Semester One'
+    ]
+
+    for semester in required_semesters:
+        courses = student.get_courses_by_semester(semester)
+        if not courses:
+            return False
+        for course in courses:
+            marks = course.get("marks")
+            retake = course.get("retake")
+            final_mark = retake if marks is not None and marks < 50 and retake is not None else marks
+            if final_mark is None or final_mark < 50:
+                return False
+    return True
+
+# -----------------------------
 # Home Dashboard
 # -----------------------------
 @app.route('/')
@@ -123,7 +147,6 @@ def home():
         selected_semester=semester_filter,
         selected_program=program_filter
     )
-
 
 # -----------------------------
 # Student Registration
@@ -262,7 +285,7 @@ def grade_entry_by_id(student_id):
         flash("Grades saved successfully!")
         return redirect(url_for('home'))
 
-    return render_template("grade_entry.html", student=student, courses=courses, existing=existing,selected_semester=selected_semester, available_semesters=available_semesters,grading_scale=grading_scale)
+    return render_template("grade_entry.html", student=student, courses=courses, existing=existing, selected_semester=selected_semester, available_semesters=available_semesters, grading_scale=grading_scale)
 
 # -----------------------------
 # View Testimonial
@@ -278,7 +301,7 @@ def view_testimonial_by_id(student_id):
     return render_template("testimonial.html", student=student, current_date=current_date)
 
 # -----------------------------
-# View Transcript
+# View Transcript (with eligibility check)
 # -----------------------------
 @app.route('/transcript_by_id/<student_id>')
 def view_transcript_by_id(student_id):
@@ -287,15 +310,7 @@ def view_transcript_by_id(student_id):
         flash("Student not found.")
         return redirect(url_for('home'))
 
-    required_semesters = [
-        'Year One Semester One',
-        'Year One Semester Two',
-        'Year Two Semester One',
-        'Year Two Semester Two',
-        'Year Three Semester One'
-    ]
-
-    all_filled = all(len(student.get_courses_by_semester(sem)) > 0 for sem in required_semesters)
+    all_filled = is_transcript_eligible(student)
     current_date = datetime.now().strftime("%d %B %Y")
 
     return render_template("transcript.html", student=student, current_date=current_date, all_filled=all_filled)
